@@ -6,9 +6,9 @@ Update this file after every completed feature. Any AI agent reading this should
 
 ## Current Status
 
-**Phase:** 13.3 — The theme reaches every surface + swatch placement corrected (Shipped)
-**Last completed:** Three corrections. (1) The theme swatches were moved back to the **marketing page** (above the landing hero's product visual) and removed from the **signed-in app home** — the previous pass had them the other way round. (2) **The theme now reaches every surface.** The five reference themes (sage, clay, lagoon, berry, orchid) defined their DARK surfaces in *neutral greys*, so selecting lagoon repainted the page navy and left every card and the menu rail generic grey — the exact complaint in the developer's screenshot. Every surface family is now tinted with the theme's own hue (lagoon → teal-navy, clay → warm brown, sage → green, berry → plum, orchid → violet) and the dark hierarchy is **rail (deepest) → page → cards (lightest)** in all ten themes; the light surfaces of the five reference themes carry a little more hue too. (3) The five classic themes' rails got their own deeper tone so the same hierarchy holds everywhere. A contrast script that parses `globals.css` and evaluates the real cascade reports all 20 theme × mode combinations passing.
-**Next:** Signed-in browser QA — click through the real authenticated pages (Home at `/home`, Habits, Mood, Stats, Calendar, Settings) and the sign-in → OAuth → app round-trip. Then the remaining product gaps: the `@radix-ui/react-tooltip` dependency is still unused.
+**Phase:** 14.0 — Strekly launched on Netlify (Shipped)
+**Last completed:** The app is **live at https://strekly.netlify.app**. (1) **Renamed to Strekly** — wordmark, tagline ("Your streak, everyday."), metadata + openGraph, About card, export error copy, package name, README, and every `context/` doc. The mascot stays Lumi. (2) **Netlify deployment** — `netlify.toml` (Node 22, telemetry off, unpinned `@netlify/plugin-nextjs`), `.nvmrc`, the three `NEXT_PUBLIC_*` env vars set on the site (all scopes, production/preview/branch contexts), and the InsForge project's `allowed_redirect_urls` extended with the Netlify origin + its OAuth callback. (3) **The middleware had to move to the edge runtime** — Netlify's OpenNext adapter cannot package a Node-runtime `proxy.ts` on Next 16 (it copies only `middleware.js` into the edge function, not the runtime chunk it requires → `Cannot find module './webpack-runtime.js'` / `'./chunks/[turbopack]_runtime.js'`). This is upstream, still open: opennextjs-netlify#3562 and #3575. The legacy `middleware.ts` convention with `runtime: "experimental-edge"` emits a self-contained bundle and deploys cleanly. (4) **GitHub repo renamed** to `CodeOfMugiwara/strekly`.
+**Next:** Connect the repo to Netlify for auto-deploys (3 clicks in the Netlify UI — the API cannot link a repo without the Netlify GitHub App), then signed-in browser QA of the real pages and the sign-in → OAuth → app round-trip. Then the remaining product gaps: the `@radix-ui/react-tooltip` dependency is still unused.
 
 
 
@@ -112,6 +112,18 @@ Update this file after every completed feature. Any AI agent reading this should
 - [x] **Theme clarity pass** — new `--color-sidebar` token; the surface is lighter than the page in every light theme (the menu no longer turns into a dark slab); hairlines ≥ 1.33:1; muted text ≥ 4.5:1 everywhere; Lavender got its missing dark block (its sidebar logo and script quote were invisible at 2.21:1); neutral shadows; both navs now use the same active tokens.
 - [x] **The theme now reaches every surface** — the five reference themes defined their DARK surfaces in neutral greys, so picking lagoon repainted the page and left the cards and the menu generic grey. Every surface family is now tinted with the theme's own hue, and the dark hierarchy is rail → page → cards in all ten themes.
 - [x] **Theme swatches** — kept on the marketing page (above the landing hero's product visual), removed from the signed-in app home.
+
+### Phase 14.0 — Strekly launched on Netlify
+
+- [x] **Renamed to Strekly** — wordmark + tagline "Your streak, everyday." across the sidebar, mobile header, landing header/footer, login page, Settings → About, the export error copy, the package name, the README and every `context/` doc. `app/layout.tsx` gained `metadataBase` + openGraph/twitter. The mascot stays Lumi.
+- [x] **Netlify site created** — `strekly.netlify.app` (site id `a25cd364-5339-4ca6-abd7-867509129b74`), `netlify.toml` (build `npm run build` → publish `.next`, `NODE_VERSION = 22`, `NEXT_TELEMETRY_DISABLED`, unpinned `@netlify/plugin-nextjs`), `.nvmrc` = 22, `.netlify/` git-ignored and ESLint-ignored.
+- [x] **Env vars on the site** — `NEXT_PUBLIC_INSFORGE_URL`, `NEXT_PUBLIC_INSFORGE_ANON_KEY`, `NEXT_PUBLIC_APP_URL` (all scopes; production + deploy-preview + branch-deploy contexts). Set through the Netlify API: env vars are **account-scoped** and the write endpoint requires `?site_id=`, and the free plan rejects explicit `scopes` ("Upgrade your Netlify account to set specific scopes") — omitting `scopes` grants all of them.
+- [x] **InsForge allow-list** — `allowed_redirect_urls` now carries the Netlify origin **and** its `/api/auth/callback`; applied with `npx @insforge/cli config apply` and re-verified with `config plan` ("No changes. Live state matches insforge.toml.").
+- [x] **The middleware moved to the edge runtime** — `proxy.ts` → `middleware.ts` with `runtime: "experimental-edge"`. Netlify's OpenNext adapter cannot package a Node-runtime middleware on Next 16 (upstream, open: #3562 / #3575).
+- [x] **GitHub repo renamed** to `CodeOfMugiwara/strekly`; `gh repo rename` rewrote the remote URL.
+- [x] **Deployed and verified** — `https://strekly.netlify.app` serves the marketing page (title "Strekly - Habit & Mood Tracker", 12 "Strekly" hits, 0 "Habit Tracker"), `/login` renders, `/home` 307-redirects to `/login` (the edge middleware is live), `/api/auth/refresh` answers 405 on GET.
+- [ ] **Auto-deploys** — connect the repo in the Netlify UI (the API cannot link a GitHub repo without the Netlify GitHub App).
+- [ ] **Signed-in QA** — sign in with a real Google/GitHub account and click through Home, Habits, Mood, Stats, Calendar, Settings.
 
 ---
 

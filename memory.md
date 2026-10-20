@@ -7,9 +7,9 @@
 
 ## Current Status
 
-**Phase:** 13.3 — The theme reaches every surface + swatch placement corrected (Shipped)
-**Last completed:** Three corrections. (1) The theme swatches were moved back to the **marketing page** (above the landing hero's product visual) and removed from the **signed-in app home** — the previous pass had them the other way round. (2) **The theme now reaches every surface.** The five reference themes (sage, clay, lagoon, berry, orchid) defined their DARK surfaces in *neutral greys*, so selecting lagoon repainted the page navy and left every card and the menu rail generic grey — the exact complaint in the developer's screenshot. Every surface family is now tinted with the theme's own hue (lagoon → teal-navy, clay → warm brown, sage → green, berry → plum, orchid → violet) and the dark hierarchy is **rail (deepest) → page → cards (lightest)** in all ten themes; the light surfaces of the five reference themes carry a little more hue too. (3) The five classic themes' rails got their own deeper tone so the same hierarchy holds everywhere. A contrast script that parses `globals.css` and evaluates the real cascade reports all 20 theme × mode combinations passing.
-**Next:** Signed-in browser QA — click through the real authenticated pages (Home at `/home`, Habits, Mood, Stats, Calendar, Settings) and the sign-in → OAuth → app round-trip. Then the remaining product gaps: the `@radix-ui/react-tooltip` dependency is still unused.
+**Phase:** 14.0 — Strekly launched on Netlify (Shipped)
+**Last completed:** The app is **live at https://strekly.netlify.app**. (1) **Renamed to Strekly** — wordmark, tagline ("Your streak, everyday."), metadata + openGraph, About card, export error copy, package name, README, and every `context/` doc. The mascot stays Lumi. (2) **Netlify deployment** — `netlify.toml` (Node 22, telemetry off, unpinned `@netlify/plugin-nextjs`), `.nvmrc`, the three `NEXT_PUBLIC_*` env vars set on the site (all scopes, production/preview/branch contexts), and the InsForge project's `allowed_redirect_urls` extended with the Netlify origin + its OAuth callback. (3) **The middleware had to move to the edge runtime** — Netlify's OpenNext adapter cannot package a Node-runtime `proxy.ts` on Next 16 (it copies only `middleware.js` into the edge function, not the runtime chunk it requires → `Cannot find module './webpack-runtime.js'` / `'./chunks/[turbopack]_runtime.js'`). This is upstream, still open: opennextjs-netlify#3562 and #3575. The legacy `middleware.ts` convention with `runtime: "experimental-edge"` emits a self-contained bundle and deploys cleanly. (4) **GitHub repo renamed** to `CodeOfMugiwara/strekly`.
+**Next:** Connect the repo to Netlify for auto-deploys (3 clicks in the Netlify UI — the API cannot link a repo without the Netlify GitHub App), then signed-in browser QA of the real pages and the sign-in → OAuth → app round-trip. Then the remaining product gaps: the `@radix-ui/react-tooltip` dependency is still unused.
 
 
 ---
@@ -2200,3 +2200,105 @@ hue — and the theme swatches live only on the marketing page.
 - Unchanged carry-forwards: OAuth end-to-end QA; login `?redirect=`;
   `@radix-ui/react-tooltip` unused; Mood Daily/Weekly/Monthly pills
   chrome-only; touch heat tooltip.
+
+---
+
+### Phase 14.0 — Strekly launched on Netlify (Complete)
+
+**Context:** The developer renamed the product to **Strekly** and wanted it live.
+Name picked from a shortlist (Steady / Morrow / Ember / Hearth / Cadence / Lumi);
+Strekly won because the mascot (Lumi) and the streak language carry over, and
+the wordmark still fits the 240px sidebar rail. Tagline: "Your streak, everyday."
+(mirrors the old "A better you, everyday.").
+
+**What was built / changed:**
+- **Rename** — `app/layout.tsx` (title, description, `metadataBase`, openGraph +
+  twitter), `app/(auth)/login/page.tsx`, `components/landing/{LandingHeader,
+  LandingFooter}.tsx`, `components/layout/{Sidebar,MobileHeader}.tsx`,
+  `components/settings/AboutCard.tsx`, `lib/data-export.ts` (error copy),
+  `app/globals.css` (comment), `package.json` (`name: "strekly"`), `README.md`,
+  `AGENTS.md`, `context/{project-overview,ui-rules,ui-tokens,build-plan,
+  library-docs}.md`. The mascot stays **Lumi** — a character, not the product.
+- **`netlify.toml`** (new) — build `npm run build` → publish `.next`;
+  `NODE_VERSION = "22"`, `NEXT_TELEMETRY_DISABLED = "1"`; `[[plugins]]` with
+  `@netlify/plugin-nextjs` left **unpinned** (Netlify auto-updates the adapter).
+- **`.nvmrc`** = 22; `.gitignore` += `.netlify/`; `eslint.config.mjs` ignores
+  `.netlify/**` (without it ESLint scanned the build output: 720 errors).
+- **`next.config.ts`** — `experimental.serverActions.allowedOrigins =
+  ["strekly.netlify.app", "*.*.netlify.app"]`. Next compares the `Origin` header
+  to the `Host` header on every Server Action POST; a deploy preview is a
+  **four-label** host (`deploy-preview-3--strekly.netlify.app`) and Next's
+  `matchWildcardDomain` compares **label by label** and requires an exact
+  label count — so the documented `*.netlify.app` does NOT match it. The
+  pattern has to be `*.*.netlify.app`. (Read from
+  `node_modules/next/dist/esm/server/app-render/csrf-protection.js`.)
+- **GitHub** — `gh repo rename strekly --yes`; the remote URL was rewritten
+  automatically. Repo: `CodeOfMugiwara/strekly` (public), branch `main`.
+
+**Decisions made:**
+- The legacy `middleware.ts` convention with `runtime: "experimental-edge"`
+  is used **instead of** Next 16's `proxy.ts`, and the reason is recorded in
+  `context/library-docs.md`, `code-standards.md` and `AGENTS.md` so nobody
+  "modernises" it back.
+- `NEXT_PUBLIC_APP_URL` = `https://strekly.netlify.app` (the subdomain first;
+  a custom domain later needs that variable + `allowed_redirect_urls` updated
+  and a redeploy).
+
+**Problems solved (the interesting one):**
+- **The Netlify build failed twice before it worked.**
+  1. `Failed to compile CJS module: .../server/.next/server/middleware.js` →
+     `Cannot find module './chunks/[turbopack]_runtime.js'`. The adapter copies
+     only `middleware.js` into the edge function, not the runtime chunk it
+     requires. This is **upstream and still open**:
+     opennextjs/opennextjs-netlify **#3562** and **#3575**. Switching to
+     `--webpack` changed the missing file to `./webpack-runtime.js` — the same
+     bug, so neither bundler works with a Node-runtime middleware.
+  2. Fix: Next 16 forces `proxy.ts` to the Node runtime and `runtime` is not
+     a configurable option in proxy files, so the file was renamed back to
+     `middleware.ts` with `runtime: "experimental-edge"`. The edge build emits
+     a self-contained bundle → the adapter's edge bundler succeeds
+     (`___netlify-edge-handler-middleware` instead of `…-node-middleware`).
+  3. Then a *local-only* failure: `Failed publishing static content` (the
+     plugin renames `.next` → `.netlify/.next`). Root cause: a running
+     `next dev` holds files inside `.next`, and Windows refuses to rename a
+     directory with open handles (EPERM). Linux CI is unaffected. **Stop the
+     dev server before `netlify deploy --build`.**
+- **Netlify env vars are account-scoped now.** `GET /api/v1/sites/{id}/env`
+  works but `POST` 404s; the write endpoint is
+  `POST /api/v1/accounts/{account_id}/env?site_id={site_id}` (**the
+  `site_id` query parameter is required** or you get a 404). The body is an
+  **array** of `{ key, scopes[], values[{ value, context }] }`. The free plan
+  rejects explicit `scopes` ("Upgrade your Netlify account to set specific
+  scopes") — omit `scopes` and the variable gets all of them. The CLI's
+  `netlify env:set` silently no-ops; use the API.
+- The Netlify CLI login writes its token to
+  `%APPDATA%\netlify\Config\config.json` → `users.<id>.auth.token`
+  (not `~/.netlify/config.json`).
+
+**Verification:**
+- `npx tsc --noEmit` 0 · `npm run lint` 0 · `next build` clean (both
+  Turbopack and webpack).
+- Deployed: `https://strekly.netlify.app` → `/` 200 with the title
+  "Strekly - Habit & Mood Tracker" (12 "Strekly", 0 "Habit Tracker");
+  `/login` 200; `/home` **307 → /login** (the edge middleware is live in
+  production); `/api/auth/refresh` 405 on GET.
+- InsForge `config plan` → "No changes. Live state matches insforge.toml."
+
+**Current state:** Live at https://strekly.netlify.app. The local dev server
+was restarted after the deploy. The site is **not yet linked to GitHub**, so
+deploys are manual (`npx netlify deploy --build --prod`, dev server stopped).
+
+**Open questions:**
+- **Auto-deploys need the Netlify UI**: project → Build & deploy → Connect to
+  Git → GitHub → pick `strekly` → branch `main`. The API cannot link a repo
+  without the Netlify GitHub App.
+- **Signed-in QA is still outstanding** — the OAuth round-trip needs a real
+  Google/GitHub account. The InsForge allow-list is set, so it should work,
+  but it is unverified.
+- The remembered-account write path (OAuth callback → `ht_last_account`
+  cookie → next login) is still unverified end to end.
+- Unchanged carry-forwards: `@radix-ui/react-tooltip` unused; login
+  `?redirect=` not applied after OAuth; Mood Daily/Weekly/Monthly pills
+  chrome-only; touch heat tooltip.
+- A custom domain later: update `NEXT_PUBLIC_APP_URL` + InsForge
+  `allowed_redirect_urls`, then redeploy.
