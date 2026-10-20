@@ -8,8 +8,8 @@ import { LandingFooter } from "@/components/landing/LandingFooter";
 /**
  * The public landing page.
  *
- * It owns `/` — the app's own Home lives at `/home` (see `proxy.ts`, which
- * sends signed-out visitors to `/login`).
+ * It owns `/` — the app's own Home lives at `/home` (see `middleware.ts`,
+ * which sends signed-out visitors to `/login`).
  */
 export default function LandingPage() {
   return (

@@ -43,7 +43,7 @@
 │   ├── layout.tsx                          → Root layout (Inter + Caveat)
 │   ├── globals.css                         → Tailwind v4 @theme + dark + color themes
 │   ├── page.tsx                            → Redirect to / or /login
-│   ├── proxy.ts                            → Route protection (Next.js 16)
+│   ├── middleware.ts                       → Route protection (edge runtime)
 │   ├── (auth)/
 │   │   ├── login/page.tsx                  → Google + GitHub OAuth
 │   │   └── callback/page.tsx               → OAuth callback
@@ -289,14 +289,13 @@ Enable RLS on every table. Policies filter by `auth.uid()`:
 
 - Provider: InsForge Auth
 - Methods: Google OAuth, GitHub OAuth (SSR PKCE via `createAuthActions`)
-- Protected routes: `/`, `/habits`, `/mood`, `/stats`, `/calendar`, `/settings` (via `proxy.ts`)
+- Protected routes: `/home`, `/habits`, `/mood`, `/stats`, `/calendar`, `/settings` (via `middleware.ts`)
 - Public routes: `/login`, `/callback` (page is optional), `/api/auth/*`
 - Cookies (SDK-managed Feature 02): `insforge_access_token` (browser-readable), `insforge_refresh_token` (httpOnly), `insforge_code_verifier` (httpOnly during OAuth)
-- `proxy.ts` runs `updateSession()` from `@insforge/sdk/ssr/middleware` then enforces login
-- OAuth callback: `GET /api/auth/callback` exchanges code, seeds `profiles` + `mood_levels`, redirects to `/`
+- `middleware.ts` runs `updateSession()` from `@insforge/sdk/ssr/middleware` then enforces login
+- OAuth callback: `GET /api/auth/callback` exchanges code, seeds `profiles` + `mood_levels`, redirects to `/home`
 - Refresh: `POST /api/auth/refresh` via `createRefreshAuthRouter()`
-- Env: `NEXT_PUBLIC_APP_URL` required for OAuth `redirectTo`
-- On login → `/`
+- Env: `NEXT_PUBLIC_APP_URL` required for OAuth `redirectTo` — on Netlify it is `https://strekly.netlify.app`, and the same origin must be in the InsForge project's `allowed_redirect_urls` (both the origin and `/api/auth/callback`)
 
 ---
 

@@ -80,7 +80,7 @@ Update context/progress-tracker.md
 10. **InsForge writes** go through Server Actions in `actions/` using `createInsforgeServer()`
 11. **Pure logic** in `lib/stats.ts` / `lib/insights.ts` / `lib/utils.ts` — no React/DB imports
 12. **Approved deps only** — see `context/code-standards.md`
-13. **Next.js 16** — `proxy.ts` not `middleware.ts`; App Router; Server Components by default
+13. **Next.js 16** — request interception lives in `middleware.ts` (edge runtime), **not** `proxy.ts`: Netlify's OpenNext adapter cannot package a Node-runtime middleware (opennextjs-netlify#3562 / #3575). App Router; Server Components by default
 
 ## Folder map (quick)
 

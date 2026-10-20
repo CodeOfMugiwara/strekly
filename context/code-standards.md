@@ -39,7 +39,7 @@ Implementation rules for the entire project. Every AI agent must follow these in
 - Data fetching in Server Components when possible; mutations via Server Actions
 - Server Actions live in `actions/` — never inline in components
 - Route handlers live in `app/api/`
-- Next.js 16 uses `proxy.ts` (not `middleware.ts`) for request interception
+- Request interception lives in `middleware.ts` (edge runtime) — **not** Next 16's `proxy.ts`, because Netlify's OpenNext adapter cannot package a Node-runtime middleware (opennextjs-netlify#3562 / #3575). See `context/library-docs.md`.
 - Caching: treat dynamic user data as uncached/request-time
 - Read current Next.js docs via context7/skills before unusual Next-specific work
 

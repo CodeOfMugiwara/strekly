@@ -88,7 +88,7 @@ OAuth (Google / GitHub) SSR flow (implemented Feature 02):
 3. Store `data.codeVerifier` in httpOnly cookie `insforge_code_verifier`, redirect to `data.url`
 4. `/api/auth/callback` route: `exchangeOAuthCode(code, codeVerifier)` writes session cookies
 5. Seed `profiles` + `mood_levels` after exchange
-6. `proxy.ts` runs `updateSession()` from `@insforge/sdk/ssr/middleware`
+6. `middleware.ts` runs `updateSession()` from `@insforge/sdk/ssr/middleware`
 
 ### Theme / Appearance (Feature 04)
 
@@ -258,11 +258,25 @@ const caveat = Caveat({ subsets: ["latin"], variable: "--font-script" });
 
 ---
 
-## proxy.ts (Next.js 16)
+## middleware.ts (edge runtime)
 
-- File name: `proxy.ts` at project root (not `middleware.ts`)
-- Protects `/`, `/habits`, `/mood`, `/stats`, `/calendar`, `/settings`
-- Auth routes: `/login`, `/callback`
+- File name: `middleware.ts` at project root, exporting `middleware`
+- **Deliberately the legacy convention, not Next 16's `proxy.ts`**, and
+  deliberately `runtime: "experimental-edge"`.
+  - Next 16 renamed `middleware.ts` → `proxy.ts` and forces the Node runtime,
+    and `runtime` is not a configurable option in proxy files.
+  - Netlify's OpenNext adapter cannot package a Node-runtime middleware: it
+    copies only `middleware.js` into the edge function, not the runtime chunk
+    that file requires, and the build fails with
+    `Cannot find module './webpack-runtime.js'` (webpack) or
+    `'./chunks/[turbopack]_runtime.js'` (turbopack).
+    See opennextjs/opennextjs-netlify#3562 and #3575 — both open.
+  - The edge runtime emits a self-contained bundle, which is what the
+    adapter's edge bundler expects.
+- The file must stay **edge-safe**: no Node built-ins, no unguarded
+  `process.env`.
+- Protects `/home`, `/habits`, `/mood`, `/stats`, `/calendar`, `/settings`
+- Auth routes: `/login`
 - Session: `updateSession()` from `@insforge/sdk/ssr/middleware` + cookie presence check (`insforge_access_token` / `insforge_refresh_token`)
-- Public routes: `/login`, `/callback`, `/api/auth/*`
+- Public routes: `/login`, `/api/auth/*`
 - Keep matcher minimal for performance

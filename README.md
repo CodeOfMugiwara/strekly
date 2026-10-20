@@ -62,7 +62,7 @@ The OAuth round-trip needs the app origin on the InsForge project:
 
 ## Stack
 
-- Next.js 16 (App Router, `proxy.ts`)
+- Next.js 16 (App Router, `middleware.ts` on the edge runtime)
 - TypeScript strict
 - Tailwind CSS v4 (`@theme` tokens in `app/globals.css`)
 - InsForge (auth + Postgres + RLS)

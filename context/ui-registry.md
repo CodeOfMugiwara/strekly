@@ -890,7 +890,7 @@ Last updated: Phase 8 UI/UX Enhancement Sprint
 Files: `app/(marketing)/page.tsx`, `components/landing/{LandingHeader,LandingHero,LandingResults,LandingHowItWorks,LandingCta,LandingFooter,LandingHabitGrid,LandingHeatmap,Reveal}.tsx`, `components/mascot/LumiMascot.tsx`
 Last updated: Phase 13
 
-The landing page owns `/`; the app's Home moved to `/home` (`proxy.ts` sends
+The landing page owns `/`; the app's Home moved to `/home` (`middleware.ts` sends
 signed-out visitors to `/login`).
 
 | Property | Class / value |
