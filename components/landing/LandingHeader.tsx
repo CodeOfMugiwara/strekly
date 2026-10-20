@@ -50,7 +50,7 @@ export function LandingHeader() {
             <BrandLeaf className="h-5 w-5" />
           </span>
           <span className="text-[15px] font-bold tracking-tight text-text">
-            Habit Tracker
+            Strekly
           </span>
         </Link>
 

@@ -8,7 +8,7 @@
 @custom-variant dark (&:where([data-theme="dark"] *));
 
 /*
-  Lavender Sky design tokens — Habit Tracker
+  Lavender Sky design tokens — Strekly
   Source of truth: public/designs/ (see trakcer UI.png) + context/ui-tokens.md
   Light mode is default. Dark mode swaps via [data-theme="dark"] on <html>.
   Color themes override the primary family via [data-color-theme="..."] on <html>.

@@ -1,6 +1,8 @@
-# Habit Tracker — Lavender Sky
+# Strekly — Habit & Mood Tracker
 
 Personal habit and mood tracking web app. Next.js 16 + InsForge + Tailwind v4.
+
+**Live:** https://strekly.netlify.app
 
 ## Quick start
 
@@ -14,7 +16,27 @@ Set InsForge credentials in `.env.local`:
 ```
 NEXT_PUBLIC_INSFORGE_URL=
 NEXT_PUBLIC_INSFORGE_ANON_KEY=
+NEXT_PUBLIC_APP_URL=http://localhost:3000
 ```
+
+## Deploy (Netlify)
+
+The app is deployed with the Next.js runtime (OpenNext adapter) via
+`netlify.toml` — build `npm run build`, publish `.next`.
+
+Environment variables (Netlify site settings, scope **All scopes**):
+
+| Variable | Value |
+|----------|-------|
+| `NEXT_PUBLIC_INSFORGE_URL` | `https://j7jw85z6.us-east.insforge.app` |
+| `NEXT_PUBLIC_INSFORGE_ANON_KEY` | InsForge anon key (public by design) |
+| `NEXT_PUBLIC_APP_URL` | `https://strekly.netlify.app` |
+
+Env vars are injected at build time — changing one requires a redeploy.
+
+The OAuth round-trip needs the app origin on the InsForge project:
+`npx -y @insforge/cli config apply --file insforge.toml`
+(`allowed_redirect_urls`).
 
 ## Where things live
 

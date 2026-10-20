@@ -7,9 +7,9 @@ export function AboutCard() {
     <SettingsSection title="About" description="App information and support.">
       <div className="flex items-center justify-between gap-6">
         <div>
-          <p className="text-sm font-semibold text-text">Habit Tracker</p>
+          <p className="text-sm font-semibold text-text">Strekly</p>
           <p className="text-xs text-text-muted">Version 1.0.0</p>
-          <p className="text-xs text-text-muted">A better you, everyday.</p>
+          <p className="text-xs text-text-muted">Your streak, everyday.</p>
           <p className="mt-1 text-xs text-text-muted">
             Made with <span className="text-error">♥</span> for a brighter
             tomorrow.

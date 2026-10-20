@@ -13,7 +13,7 @@ export function MobileHeader() {
           <BrandLeaf className="h-5 w-5" />
         </div>
         <span className="text-sm font-bold tracking-tight text-text">
-          Habit Tracker
+          Strekly
         </span>
       </div>
 

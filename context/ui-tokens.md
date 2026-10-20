@@ -1,6 +1,6 @@
 # UI Tokens
 
-Design tokens for Habit Tracker — Lavender Sky. Extracted from `public/designs/` (especially `trakcer UI.png`) and the original HTML app palette. All values are defined in `app/globals.css` using Tailwind v4 `@theme`. Never hardcode hex values or use raw Tailwind palette classes in components.
+Design tokens for Strekly — Lavender Sky. Extracted from `public/designs/` (especially `trakcer UI.png`) and the original HTML app palette. All values are defined in `app/globals.css` using Tailwind v4 `@theme`. Never hardcode hex values or use raw Tailwind palette classes in components.
 
 ---
 
@@ -109,7 +109,7 @@ Rules:
 ## Logo & Branding
 
 - **Logo tile:** `rounded-xl bg-primary-lightest` containing a purple **leaf/sprout mark** in `primary` (custom leaf SVG — upgrade from the 🌿 placeholder; matches trakcer UI.png)
-- **Wordmark:** "Habit Tracker" `text-[15px] font-bold text-text`; tagline "A better you / Everyday" `text-[11px] text-text-muted`
+- **Wordmark:** "Strekly" `text-[15px] font-bold text-text`; tagline "Your streak / Everyday" `text-[11px] text-text-muted`
 - **Script accents:** Caveat (`font-script`) in `text-primary/85` or `text-primary-dark` — sidebar footer quotes, page-header quotes, decorative cards
 - **Sidebar footer:** botanical glyph (decorative) + script quote; below it Dark Mode switch + profile avatar (no topbar)
 - **Scenic decorative cards:** lavender gradient wash + script line (v1 approximation of the lavender-field illustration)

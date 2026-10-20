@@ -257,7 +257,7 @@ export function parseExportFile(
     .object({ version: z.unknown() })
     .safeParse(raw);
   if (!shapeCheck.success || typeof shapeCheck.data.version !== "number") {
-    return { error: "That file doesn't look like a Habit Tracker export." };
+    return { error: "That file doesn't look like a Strekly export." };
   }
   if (shapeCheck.data.version !== EXPORT_VERSION) {
     return {

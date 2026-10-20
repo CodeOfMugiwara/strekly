@@ -2,7 +2,7 @@
 
 ## About the Project
 
-Habit Tracker is a personal habit and mood tracking web app with a soft, modern “Lavender Sky” aesthetic. The user signs in once, tracks daily habits with a single status per habit per day, logs mood with optional notes, and reviews consistency through stats, a contribution-style heatmap, and a monthly calendar.
+Strekly (formerly "Habit Tracker") is a personal habit and mood tracking web app with a soft, modern “Lavender Sky” aesthetic. The user signs in once, tracks daily habits with a single status per habit per day, logs mood with optional notes, and reviews consistency through stats, a contribution-style heatmap, and a monthly calendar.
 
 The product is intentionally calm and encouraging — short affirmations, streaks framed as motivation (not shame), and insights computed locally from the user’s own data. No AI, no social features, no analytics SDK.
 
@@ -40,7 +40,7 @@ Protected app routes live under the `(app)` route group. Auth pages live under `
 Fixed left sidebar on all authenticated pages.
 
 ```
-[Logo] Habit Tracker
+[Logo] Strekly
        A better you / Everyday
 
 Home

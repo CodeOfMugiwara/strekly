@@ -57,7 +57,7 @@ Accent theme variations (Settings swatches): **Lavender (default)**, Mint, Peach
 ### Logo & branding
 
 - **Logo tile:** rounded square (`rounded-xl`), `bg-primary-lightest`, purple **leaf/sprout** glyph — not emoji-placeholder quality: a proper leaf (custom SVG or polished glyph) in `primary`, matching trakcer UI.png
-- **Wordmark:** "Habit Tracker" (`font-bold text-text`) + tagline "A better you / Everyday" (`text-[11px] text-text-muted`, two lines)
+- **Wordmark:** "Strekly" (`font-bold text-text`) + tagline "Your streak / Everyday" (`text-[11px] text-text-muted`, two lines)
 - **Sidebar footer:** lavender botanical illustration (decorative, non-interactive) + rotating **script quotes** in Caveat (`font-script text-primary/85`): "A calmer you / A brighter tomorrow", "Small Steps / Brighter Days", "Good Days / Build Great Days", "Same Calmer You / Brighter Days"
 - **Page headers:** page title (`text-3xl font-bold`) + subtitle + right-aligned **script accent** ("A calmer mind / A brighter tomorrow 💜" etc.) in Caveat
 - **Decorative lavender cards:** scenic lavender-field illustration + script quote (Home inspiration card, Stats/Settings footer cards). v1 approximation: gradient wash + script text + botanical glyph; exact illustration assets optional enhancement

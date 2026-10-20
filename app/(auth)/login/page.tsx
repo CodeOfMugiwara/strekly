@@ -203,9 +203,9 @@ function LoginContent() {
           <span className="mb-3 flex h-12 w-12 items-center justify-center rounded-xl bg-primary-lightest text-primary-text">
             <BrandLeaf className="h-6 w-6" />
           </span>
-          <h1 className="text-xl font-semibold text-text">Habit Tracker</h1>
+          <h1 className="text-xl font-semibold text-text">Strekly</h1>
           <p className="mt-1 text-sm text-text-muted">
-            A better you, everyday
+            Your streak, everyday
           </p>
         </div>
 

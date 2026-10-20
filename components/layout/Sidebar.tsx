@@ -22,10 +22,10 @@ export function Sidebar() {
         </div>
         <div className="text-center">
           <div className="text-[15px] font-bold tracking-tight text-text">
-            Habit Tracker
+            Strekly
           </div>
           <div className="mt-0.5 text-[11px] leading-snug text-text-muted">
-            A better you
+            Your streak
             <br />
             Everyday
           </div>

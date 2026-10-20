@@ -9,8 +9,25 @@ const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
 const caveat = Caveat({ subsets: ["latin"], variable: "--font-script" });
 
 export const metadata: Metadata = {
-  title: "Habit Tracker",
-  description: "A better you, everyday. Habit and mood tracking with Lavender Sky.",
+  metadataBase: new URL(
+    process.env.NEXT_PUBLIC_APP_URL ?? "https://strekly.netlify.app",
+  ),
+  title: "Strekly — Habit & Mood Tracker",
+  description:
+    "Your streak, everyday. Strekly tracks your daily habits and mood in one calm place, so you can see what keeps you going.",
+  openGraph: {
+    title: "Strekly — Habit & Mood Tracker",
+    description:
+      "Your streak, everyday. Track daily habits and mood in one calm place.",
+    type: "website",
+    siteName: "Strekly",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Strekly — Habit & Mood Tracker",
+    description:
+      "Your streak, everyday. Track daily habits and mood in one calm place.",
+  },
 };
 
 export default function RootLayout({

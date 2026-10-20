@@ -1,6 +1,6 @@
-# Habit Tracker — Agent Instructions
+# Strekly — Agent Instructions
 
-You are working on **Habit Tracker** — a Next.js 16 + InsForge habit and mood app with a Lavender Sky UI.
+You are working on **Strekly** (formerly "Habit Tracker") — a Next.js 16 + InsForge habit and mood app with a Lavender Sky UI. Live at `https://strekly.netlify.app`.
 
 ## Read first, always
 

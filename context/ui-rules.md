@@ -1,6 +1,6 @@
 # UI Rules
 
-Concise rules for Habit Tracker UI. Design assets in `public/designs/` are the visual source of truth. Attach them in chat with `@public/designs/<File>.png` (see AGENTS.md design map). `trakcer UI.png` is the palette / UI kit / dark + color-theme board. These rules keep the interface consistent without over-specifying every pixel.
+Concise rules for Strekly UI. Design assets in `public/designs/` are the visual source of truth. Attach them in chat with `@public/designs/<File>.png` (see AGENTS.md design map). `trakcer UI.png` is the palette / UI kit / dark + color-theme board. These rules keep the interface consistent without over-specifying every pixel.
 
 ---
 
@@ -24,7 +24,7 @@ Always load Inter (body) and Caveat (script accents) via `next/font/google` in t
 
 ## Sidebar
 
-- Logo tile + “Habit Tracker” + tagline “A better you / Everyday”
+- Logo tile + “Strekly” + tagline “Your streak / Everyday”
 - Nav: Home, Habits, Mood, Stats, Calendar, Settings — icon + label
 - Active item: accent background, accent-foreground text, font-semibold
 - Inactive: text-secondary; hover → accent-light

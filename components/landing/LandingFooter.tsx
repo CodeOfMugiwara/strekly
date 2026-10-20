@@ -16,7 +16,7 @@ export function LandingFooter() {
             <BrandLeaf className="h-5 w-5" />
           </span>
           <span className="text-[15px] font-bold tracking-tight text-text">
-            Habit Tracker
+            Strekly
           </span>
         </Link>
 
@@ -25,7 +25,7 @@ export function LandingFooter() {
         </ScriptQuote>
 
         <p className="text-xs text-text-muted">
-          A better you, everyday.
+          Your streak, everyday.
         </p>
       </div>
     </footer>

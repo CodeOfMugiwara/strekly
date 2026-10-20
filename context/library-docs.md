@@ -1,6 +1,6 @@
 # Library Docs
 
-Project-specific usage patterns for third-party libraries in Habit Tracker. This file covers only how we use each library here — rules, patterns, and constraints.
+Project-specific usage patterns for third-party libraries in Strekly. This file covers only how we use each library here — rules, patterns, and constraints.
 
 ---
 
