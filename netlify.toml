@@ -6,6 +6,9 @@
 # here, pinning opts out of automatic adapter updates.
 
 [build]
+  # Turbopack (the default). The build must stay Turbopack-compatible
+  # because the middleware runs on the EDGE runtime (see middleware.ts):
+  # the adapter bundles edge assets for Turbopack builds.
   command = "npm run build"
   publish = ".next"
 

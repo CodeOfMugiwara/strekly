@@ -18,7 +18,7 @@ function hasSessionCookie(request: NextRequest): boolean {
   );
 }
 
-export async function proxy(request: NextRequest) {
+export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const sessionBefore = hasSessionCookie(request);
 
@@ -73,6 +73,22 @@ export async function proxy(request: NextRequest) {
 }
 
 export const config = {
+  /**
+   * Edge runtime, deliberately.
+   *
+   * Next 16 renamed `middleware.ts` to `proxy.ts` and forces the Node
+   * runtime, and Netlify's OpenNext adapter cannot package a Node-runtime
+   * middleware: it copies only `middleware.js` into the edge function and
+   * not the runtime chunk it requires, so the build dies with
+   * "Cannot find module './webpack-runtime.js'" (webpack) or
+   * "'./chunks/[turbopack]_runtime.js'" (turbopack). See
+   * opennextjs/opennextjs-netlify#3562 and #3575 — both open.
+   *
+   * The edge runtime emits a self-contained bundle, which is what the
+   * adapter's edge bundler expects. This file must therefore stay
+   * edge-safe: no Node built-ins, no `process.env` without a guard.
+   */
+  runtime: "experimental-edge",
   matcher: [
     "/",
     "/home",
