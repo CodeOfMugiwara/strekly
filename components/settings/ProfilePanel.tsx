@@ -84,6 +84,7 @@ export function ProfilePanel({ profile }: ProfilePanelProps) {
         <div className="relative">
           <Input
             id="settings-profile-name"
+            data-tour="settings-name"
             value={name}
             onChange={(e) => {
               const next = e.target.value.slice(0, NAME_MAX);

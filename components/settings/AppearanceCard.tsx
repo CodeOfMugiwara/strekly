@@ -81,6 +81,7 @@ export function AppearanceCard() {
             className="flex flex-wrap items-start gap-4"
             role="group"
             aria-label="Color theme"
+            data-tour="settings-appearance"
           >
             {COLOR_OPTIONS.map((option) => {
               const active = colorTheme === option.value;

@@ -1,5 +1,6 @@
 import { SettingsSection } from "@/components/settings/SettingsSection";
 import { LumiMascot } from "@/components/mascot/LumiMascot";
+import { TourButton } from "@/components/tour/TourButton";
 
 /** Identity block only — link rows and Danger Zone removed in the UI overhaul. */
 export function AboutCard() {
@@ -14,6 +15,9 @@ export function AboutCard() {
             Made with <span className="text-error">♥</span> for a brighter
             tomorrow.
           </p>
+          <div className="mt-3">
+            <TourButton />
+          </div>
         </div>
         <LumiMascot
           size="sm"

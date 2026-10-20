@@ -2302,3 +2302,48 @@ deploys are manual (`npx netlify deploy --build --prod`, dev server stopped).
   chrome-only; touch heat tooltip.
 - A custom domain later: update `NEXT_PUBLIC_APP_URL` + InsForge
   `allowed_redirect_urls`, then redeploy.
+
+---
+
+### Phase 14.1 — Starter habits for every account + the product tour (Complete)
+
+**Context:** The developer noticed that "the habits I set up for myself will be showing for everyone and my name too", asked for a neutral starter set every new account can edit, and asked for a tour of the app that teaches a new user how to edit their habits, change their name and use the other features.
+
+**Diagnosis first (it was NOT a leak):** RLS is correct on all 7 tables (`user_id = auth.uid()`, profiles `id = auth.uid()`) and every loader/action filters by `user.id`; the DB had exactly one profile. What the developer had seen was the **demo seed** in `lib/habits-data.ts` → `seedDemoData()`, which copied `lib/mock-habits.ts` — his own September 2026 tracker — into every new account: 9 habits with his names, his statuses and his first-person journal notes ("Finally fixed my sleep schedule.", "Bath before 9 AM: cold shower, surprisingly nice."). `lib/mock-home.ts` also still carried `mockProfile.displayName = "Krishna"` (dead code, nothing imported it — but his name was in the shipped bundle).
+
+**What was built:**
+- **Starter set** — new `lib/starter-habits.ts`: 3 categories (Health `#34D399`, Mind `#A78BFA`, Evening `#60A5FA`, all from the preset swatches) + 6 habits with **no completions and no notes** (Drink water 💧, Move your body 🏃, Read 20 minutes 📖, Journal 📓, Sleep by 11 PM 🌙, No phone in bed 📵). Every emoji maps to a real `HabitIcon` glyph (water / walk / book / journal / moon / phone-off).
+- **Seeded at sign-up** — `app/api/auth/callback/route.ts` → `seedStarterHabits()`: categories first, then habits with their category ids; guarded by an existence check and **fail-closed** (a failing check seeds nothing).
+- **The old seed is gone** — `lib/habits-data.ts` no longer seeds or dedupes anything; `lib/mock-habits.ts` deleted; `lib/mock-home.ts` deleted; the mood scale moved to `lib/mood-scale.ts` (MOOD_SCALE, now the single source for both the seed and `FALLBACK_LEVELS`) and the quote to `lib/quotes.ts` (`INSPIRATION_QUOTE`).
+- **The product tour** — `components/tour/`: `tour-steps.ts` (11 steps), `TourProvider` (the engine + context), `TourOverlay` (the spotlight + the card), `TourButton` (replay). Mounted in `app/(app)/layout.tsx`. Steps: Home check-in → This Week → the habits grid → editing a habit → Add Habit → logging a mood → the calendar → the heatmap → your profile → **your name (the tour opens the profile popover for you)** → the theme picker.
+- **Anchors** — `data-tour` on the habit list, the week strip, the habits grid, a habit name, Add Habit, the mood chips, the calendar grid, the heatmap, the name field and the theme swatches; `PopoverPanel` gained `triggerTourId` for the profile trigger.
+- **`LumiMascot` gained `interactive={false}`** — decorative mode (no click, no bubble, out of the tab order) so Lumi can be the guide in the tour card.
+
+**Decisions made (the developer's four answers):**
+- 6 universal habits with **no fake history** (the charts honestly start empty).
+- A **spotlight overlay on the real pages**, not a separate tour page.
+- **Auto-runs once** per browser + a replay button.
+- Completion tracked in **localStorage** (`strekly_tour_seen`) — no schema change.
+- The developer's own account keeps its 9 habits and notes; the personal mock files are deleted so nothing personal ships.
+- The tour is **custom** (no new dependency) — `motion` was already there.
+
+**Problems solved:**
+- **The tour's card can collide with its target.** Placement now tries the preferred side, then the opposite side, and pins to the bottom of the viewport if the target is too wide for either — it never covers the thing it points at.
+- **A transient surface (the profile popover) only exists after it is opened.** A step can name an `open` trigger; the engine clicks it, waits for the panel, spots the field, and closes the panel again (Escape, then a trigger click) when the step is left or the tour ends.
+- **A missing target must not strand the user** — a step whose element never appears is skipped.
+- **The overlay must portal.** The app shell is an `isolate` stacking context, so an overlay rendered inside it would paint *under* the Radix popovers (which portal to `document.body` themselves). The tour portals to the body at `z-90`.
+- `react-hooks/set-state-in-effect` and `react-hooks/refs` (the React Compiler rules) — the auto-start is deferred by a tick, the client-only check uses `useSyncExternalStore`, and the ref read moved out of the cleanup function.
+- The dim is a single element over the target carrying a huge `box-shadow` spread (everything outside the target is dimmed, the target stays bright); a second transparent layer swallows clicks.
+
+**Verification:**
+- `npx tsc --noEmit` 0 · `npm run lint` 0 · `next build` clean.
+- The engine was driven end to end with Playwright + Edge on a temporary `/preview-tour` route (deleted afterwards): every placement lands inside the viewport, the card never overlaps the target, the popover step opens the panel itself (`popoverOpen: true` on that step) and the panel is closed again afterwards (`popoverOpen: false`), and the tour ends on "Done". No console errors beyond the pre-existing favicon 404.
+- All 12 anchor ids verified present in the source.
+- The starter-set SQL was validated against the live schema (insert + verify + delete, marker `[seedtest]`) — the developer's 9 habits and 0 categories are untouched.
+
+**Current state:** Build + lint + tsc clean. A brand-new account now gets 6 editable starter habits and 3 categories and a guided tour of the app. The developer still needs a signed-in click-through of the real pages (the tour against the real anchors, and a brand-new account's first-run experience).
+
+**Open questions:**
+- The tour has not been seen on the real pages — only on the preview route. The anchors are verified in code, the geometry is not.
+- The Netlify site is still not linked to GitHub (auto-deploys need the Netlify UI).
+- Unchanged carry-forwards: `@radix-ui/react-tooltip` unused; login `?redirect=` not applied after OAuth; Mood Daily/Weekly/Monthly pills chrome-only; touch heat tooltip; OAuth e2e QA.

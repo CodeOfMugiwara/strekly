@@ -6,6 +6,7 @@ import { MobileHeader } from "@/components/layout/MobileHeader";
 import { AuroraBackdrop } from "@/components/layout/AuroraBackdrop";
 import { PageTransition } from "@/components/layout/PageTransition";
 import { ProfileThemeSync } from "@/components/settings/ProfileThemeSync";
+import { TourProvider } from "@/components/tour/TourProvider";
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -21,26 +22,28 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
       (step 7).
     */
     <div className="relative isolate min-h-screen bg-background">
-      <AuroraBackdrop />
+      <TourProvider>
+        <AuroraBackdrop />
 
-      <ProfileThemeSync />
-      <Sidebar />
-      {/*
-        No z-index here on purpose. The wrapper above is `isolate`, so this
-        subtree shares ONE stacking context with the sidebar (z-40) and the
-        aurora (z-0). Giving this div its own z-index would create a nested
-        stacking context, which would trap in-page modals (z-50) below the
-        sidebar — the modal backdrop would let the sidebar show through.
-        Left at `z-index: auto`, the modal still resolves against the shared
-        context and paints above the sidebar.
-      */}
-      <div className="relative flex min-h-screen flex-col md:pl-[var(--sidebar-width)]">
-        <MobileHeader />
-        <main className="flex-1 p-4 pb-24 md:p-6 lg:p-8">
-          <PageTransition>{children}</PageTransition>
-        </main>
-        <MobileNav />
-      </div>
+        <ProfileThemeSync />
+        <Sidebar />
+        {/*
+          No z-index here on purpose. The wrapper above is `isolate`, so this
+          subtree shares ONE stacking context with the sidebar (z-40) and the
+          aurora (z-0). Giving this div its own z-index would create a nested
+          stacking context, which would trap in-page modals (z-50) below the
+          sidebar — the modal backdrop would let the sidebar show through.
+          Left at `z-index: auto`, the modal still resolves against the shared
+          context and paints above the sidebar.
+        */}
+        <div className="relative flex min-h-screen flex-col md:pl-[var(--sidebar-width)]">
+          <MobileHeader />
+          <main className="flex-1 p-4 pb-24 md:p-6 lg:p-8">
+            <PageTransition>{children}</PageTransition>
+          </main>
+          <MobileNav />
+        </div>
+      </TourProvider>
     </div>
   );
 }

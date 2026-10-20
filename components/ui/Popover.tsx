@@ -14,6 +14,11 @@ type PopoverPanelProps = {
   title: string;
   /** Optional subtitle under the title. */
   description?: string;
+  /**
+   * `data-tour` value for the trigger, so the product tour can point at it.
+   * The tour finds its targets by that attribute.
+   */
+  triggerTourId?: string;
   children: ReactNode;
 };
 
@@ -28,12 +33,14 @@ export function PopoverPanel({
   triggerIcon,
   title,
   description,
+  triggerTourId,
   children,
 }: PopoverPanelProps) {
   return (
     <RadixPopover.Root>
       <RadixPopover.Trigger
         aria-label={triggerLabel}
+        data-tour={triggerTourId}
         className={cn(
           "flex h-10 w-10 items-center justify-center rounded-full border border-border bg-surface text-text",
           "transition-colors hover:bg-surface-hover",

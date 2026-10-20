@@ -69,7 +69,7 @@ export function MonthCard({
         ))}
       </div>
 
-      <div className="grid grid-cols-7 gap-1.5">
+      <div className="grid grid-cols-7 gap-1.5" data-tour="calendar-grid">
         {cells.map((cell, idx) => {
           const delay = `${Math.floor(idx / 7) * 30 + (idx % 7) * 15}ms`;
           if (!cell.inMonth) {

@@ -277,7 +277,7 @@ export function HabitsView({
             message="One more habit, one more reason to show up."
             caption="Tap Lumi for a nudge."
           />
-          <Button onClick={openAdd}>
+          <Button onClick={openAdd} data-tour="habits-add">
             <Plus className="h-4 w-4" />
             Add Habit
           </Button>

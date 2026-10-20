@@ -11,7 +11,7 @@ type Props = {
 
 export function WeekStrip({ days }: Props) {
   return (
-    <Card>
+    <Card data-tour="home-week">
       <CardHeader>
         <CardTitle>This Week</CardTitle>
       </CardHeader>

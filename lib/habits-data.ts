@@ -1,10 +1,5 @@
 import { redirect } from "next/navigation";
 import { createInsforgeServer } from "@/lib/insforge-server";
-import {
-  mockGridHabits,
-  mockGridStatuses,
-  mockDayNotes,
-} from "@/lib/mock-habits";
 import type { HabitStatus } from "@/types";
 
 export type GridHabit = {
@@ -35,131 +30,6 @@ export type HabitsPageData = {
   defaultView: { year: number; month: number };
 };
 
-type InsforgeServer = Awaited<ReturnType<typeof createInsforgeServer>>;
-
-/** One-time healing: if the demo habits were seeded multiple times,
- * keep the earliest copy of each seed name and delete the rest. */
-async function dedupeSeedHabits(
-  insforge: InsforgeServer,
-  userId: string,
-): Promise<void> {
-  try {
-    const seedNames = new Set(mockGridHabits.map((h) => h.name));
-    const { data: rows, error } = await insforge.database
-      .from("habits")
-      .select("id, name, created_at")
-      .eq("user_id", userId)
-      .order("created_at", { ascending: true });
-
-    if (error || !rows) {
-      if (error) {
-        console.error("[lib/habits-data/dedupeSeedHabits]", error.message);
-      }
-      return;
-    }
-
-    const keptNames = new Set<string>();
-    const toDelete: string[] = [];
-    for (const row of rows as Array<{ id: string; name: string }>) {
-      if (!seedNames.has(row.name)) continue;
-      if (keptNames.has(row.name)) toDelete.push(row.id);
-      else keptNames.add(row.name);
-    }
-
-    for (const id of toDelete) {
-      const { error: delError } = await insforge.database
-        .from("habits")
-        .delete()
-        .eq("id", id)
-        .eq("user_id", userId);
-      if (delError) {
-        console.error("[lib/habits-data/dedupeSeedHabits] delete:", delError.message);
-      }
-    }
-    if (toDelete.length > 0) {
-      console.warn(
-        `[lib/habits-data/dedupeSeedHabits] removed ${toDelete.length} duplicate demo habits`,
-      );
-    }
-  } catch (error) {
-    console.error("[lib/habits-data/dedupeSeedHabits]", error);
-  }
-}
-
-async function seedDemoData(
-  insforge: InsforgeServer,
-  userId: string,
-): Promise<void> {
-  try {
-    const habitRows = mockGridHabits.map((h, i) => ({
-      user_id: userId,
-      name: h.name,
-      emoji: h.emoji,
-      description: null,
-      category_id: null,
-      sort_order: i,
-      active: true,
-    }));
-
-    const { data: created, error: habitError } = await insforge.database
-      .from("habits")
-      .insert(habitRows)
-      .select("id, name");
-
-    if (habitError || !created) {
-      console.error("[lib/habits-data/seedDemoData] habits:", habitError?.message);
-      return;
-    }
-
-    const idByName = new Map(
-      (created as Array<{ id: string; name: string }>).map((r) => [r.name, r.id]),
-    );
-
-    const completions: Array<{
-      user_id: string;
-      habit_id: string;
-      date: string;
-      status: HabitStatus;
-    }> = [];
-    for (const mock of mockGridHabits) {
-      const habitId = idByName.get(mock.name);
-      if (!habitId) continue;
-      const dayMap = mockGridStatuses[mock.id] ?? {};
-      for (const [date, status] of Object.entries(dayMap)) {
-        if (status === "unset") continue;
-        completions.push({
-          user_id: userId,
-          habit_id: habitId,
-          date,
-          status,
-        });
-      }
-    }
-    if (completions.length > 0) {
-      const { error } = await insforge.database
-        .from("habit_completions")
-        .insert(completions);
-      if (error) {
-        console.error("[lib/habits-data/seedDemoData] completions:", error.message);
-      }
-    }
-
-    const notes = Object.entries(mockDayNotes).map(([date, content]) => ({
-      user_id: userId,
-      date,
-      content,
-    }));
-    if (notes.length > 0) {
-      const { error } = await insforge.database.from("daily_notes").insert(notes);
-      if (error) {
-        console.error("[lib/habits-data/seedDemoData] notes:", error.message);
-      }
-    }
-  } catch (error) {
-    console.error("[lib/habits-data/seedDemoData]", error);
-  }
-}
-
 export async function loadHabitsPageData(): Promise<HabitsPageData> {
   const insforge = await createInsforgeServer();
   const {
@@ -167,25 +37,10 @@ export async function loadHabitsPageData(): Promise<HabitsPageData> {
   } = await insforge.auth.getCurrentUser();
   if (!user) redirect("/login");
 
-  // Heal any duplicate demo rows from earlier buggy seeding, then seed once if empty.
-  // Fail closed: if the check query errors, do NOT seed (duplicates are worse than no demo).
-  await dedupeSeedHabits(insforge, user.id);
-
-  const { data: existing, error: existingError } = await insforge.database
-    .from("habits")
-    .select("id")
-    .eq("user_id", user.id)
-    .limit(1);
-
-  if (existingError) {
-    console.error(
-      "[lib/habits-data/loadHabitsPageData] seed check:",
-      existingError.message,
-    );
-  } else if (Array.isArray(existing) && existing.length === 0) {
-    await seedDemoData(insforge, user.id);
-  }
-
+  // No seeding here. A new account is given the starter set at sign-up
+  // (see `app/api/auth/callback/route.ts` → `seedStarterHabits`), and the
+  // old lazy seed that copied the developer's personal tracker into every
+  // account has been removed.
   const [
     { data: habitRows, error: habitError },
     { data: categoryRows, error: categoryError },

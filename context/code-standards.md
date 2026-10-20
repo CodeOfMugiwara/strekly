@@ -42,6 +42,10 @@ Implementation rules for the entire project. Every AI agent must follow these in
 - Request interception lives in `middleware.ts` (edge runtime) — **not** Next 16's `proxy.ts`, because Netlify's OpenNext adapter cannot package a Node-runtime middleware (opennextjs-netlify#3562 / #3575). See `context/library-docs.md`.
 - Caching: treat dynamic user data as uncached/request-time
 - Read current Next.js docs via context7/skills before unusual Next-specific work
+- Anything the product tour points at carries a `data-tour="<id>"` attribute
+  (a Radix popover trigger uses `triggerTourId` on `PopoverPanel`). The tour
+  finds targets by that attribute — never by a CSS selector — so a restyle
+  can never break the tour.
 
 ---
 

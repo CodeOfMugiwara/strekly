@@ -1,4 +1,4 @@
-import { mockMoodLevels } from "@/lib/mock-home";
+import { MOOD_SCALE } from "@/lib/mood-scale";
 
 export type MoodLevel = {
   value: number;
@@ -74,7 +74,7 @@ const MONTH_NAMES = [
 ];
 const WEEKDAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
-export const FALLBACK_LEVELS: MoodLevel[] = mockMoodLevels.map((m) => ({
+export const FALLBACK_LEVELS: MoodLevel[] = MOOD_SCALE.map((m) => ({
   value: m.value,
   label: m.label,
   emoji: m.emoji,

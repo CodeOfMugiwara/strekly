@@ -74,7 +74,7 @@ export function HabitGridCard({
   const columns = `repeat(${daysInMonth}, minmax(0, 1fr))`;
 
   return (
-    <Card>
+    <Card data-tour="habits-grid">
       <div className="overflow-x-auto">
         <div className="min-w-[680px]">
           {/* Day-number header */}
@@ -146,6 +146,7 @@ export function HabitGridCard({
                     type="button"
                     onClick={() => onOpenEdit(habit)}
                     title={`Edit ${habit.name}`}
+                    data-tour="habits-edit"
                     className="truncate whitespace-nowrap text-left text-[13px] font-medium text-text hover:text-primary-text hover:underline"
                   >
                     {habit.name}

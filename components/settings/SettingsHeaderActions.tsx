@@ -32,6 +32,7 @@ export function SettingsHeaderActions({
       <PopoverPanel
         triggerLabel="Your profile"
         triggerIcon={<User className="h-4 w-4" />}
+        triggerTourId="settings-profile"
         title="Your Profile"
         description="Manage your personal details."
       >

@@ -24,6 +24,13 @@ export type LumiMascotProps = {
   message?: string;
   /** Extra line under the message — a supporting clause. */
   caption?: string;
+  /**
+   * When false the mascot is purely decorative: it cannot be clicked, it
+   * never opens its speech bubble and it is removed from the tab order.
+   * Used by the product tour, where Lumi is the guide in the tour card
+   * rather than a button the user can press.
+   */
+  interactive?: boolean;
 };
 
 const ENCOURAGING_QUOTES = [
@@ -46,11 +53,12 @@ export function LumiMascot({
   showDialogue = true,
   message,
   caption,
+  interactive = true,
 }: LumiMascotProps) {
   const gradientId = useId();
   const [quoteIndex, setQuoteIndex] = useState(0);
   const [isInteracting, setIsInteracting] = useState(false);
-  const [bubbleOpen, setBubbleOpen] = useState(showDialogue);
+  const [bubbleOpen, setBubbleOpen] = useState(showDialogue && interactive);
   const prefersReducedMotion = useReducedMotion();
 
   // Auto-determine mood based on progress & streak if not manually specified
@@ -193,12 +201,17 @@ export function LumiMascot({
       {/* Interactive Mascot SVG Character */}
       <button
         type="button"
-        onClick={handleMascotClick}
-        aria-label="Interact with Lumi, your habit companion"
-        title="Tap Lumi for inspiration!"
+        onClick={interactive ? handleMascotClick : undefined}
+        aria-label={interactive ? "Interact with Lumi, your habit companion" : undefined}
+        aria-hidden={interactive ? undefined : true}
+        tabIndex={interactive ? undefined : -1}
+        title={interactive ? "Tap Lumi for inspiration!" : undefined}
         className={cn(
-          "group relative flex shrink-0 cursor-pointer items-center justify-center transition-transform active:scale-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 rounded-full",
-          isInteracting ? "scale-110" : "hover:scale-105"
+          "group relative flex shrink-0 items-center justify-center rounded-full transition-transform focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50",
+          interactive
+            ? "cursor-pointer active:scale-90"
+            : "pointer-events-none select-none",
+          isInteracting ? "scale-110" : interactive && "hover:scale-105",
         )}
         style={{ width: sizePixels, height: sizePixels }}
       >

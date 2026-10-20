@@ -201,7 +201,7 @@ export function TodayHabits({ habits, weekDateKeys, selectedDate }: Props) {
         </div>
       </div>
 
-      <ul className="space-y-1.5 pt-1">
+      <ul className="space-y-1.5 pt-1" data-tour="home-checkin">
         {habits.map((habit) => {
           const statuses = localStatuses[habit.id] ?? habit.weekStatuses;
           return (

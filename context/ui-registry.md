@@ -1243,5 +1243,47 @@ The light surfaces of the five reference themes carry a little more hue too
 **When adding a theme, tint the whole surface family — a themed background
 with grey cards is not a theme.**
 
+### Phase 14.1 — Starter set + the product tour
 
+Files: `lib/starter-habits.ts`, `components/tour/{TourProvider,TourOverlay,TourButton,tour-steps}`, `app/api/auth/callback/route.ts`, `lib/{mood-scale,quotes}.ts`
+Last updated: Phase 14.1
 
+**Starter set (every new account)**
+
+- Seeded at SIGN-UP in the OAuth callback (`seedStarterHabits`), not on the first
+  visit to `/habits`. 3 categories (Health / Mind / Evening, from the preset
+  swatches) + 6 habits, **no completions and no notes**.
+- The six emojis all map to real `HabitIcon` glyphs (water / walk / book /
+  journal / moon / phone-off), so they render as Strekly icons.
+- The old seed copied the developer's personal tracker (his habit names, his
+  statuses, his first-person journal notes) into every new account. It is gone,
+  along with `lib/mock-habits.ts` and the `mockProfile` block that carried the
+  name "Krishna". `lib/mock-home.ts` was deleted; the mood scale now lives in
+  `lib/mood-scale.ts` and the quote in `lib/quotes.ts`.
+- The guard is fail-closed: if the existence check errors, nothing is seeded.
+
+**The product tour (spotlight)**
+
+- A global client component in the app layout (`TourProvider`). Each step is
+  `{ route, target, title, body, placement?, open? }` in `components/tour/tour-steps.ts`.
+- **Targets are found by a `data-tour` attribute**, never by CSS selectors. Any
+  element the tour points at gets `data-tour="<id>"`; a Radix popover trigger
+  gets `triggerTourId="<id>"` on `PopoverPanel`.
+- The engine: navigate to the route → wait for the element → scroll it into view
+  → measure → spot it. A target that never appears is SKIPPED, never stalled on.
+- **`open`**: a step whose element only exists inside a transient surface (the
+  profile popover) names a trigger to click first. The surface is closed again
+  (Escape, then a trigger click) when the step is left or the tour ends.
+- The spotlight is one element over the target carrying a huge `box-shadow`
+  spread — everything outside the target is dimmed, the target stays bright. A
+  second transparent layer swallows clicks. Both are portalled to
+  `document.body` (the app shell is an `isolate` stacking context, so an
+  overlay inside it would sit under the Radix popovers).
+- The card prefers its placement, falls back to the opposite side, and pins to
+  the bottom of the viewport if the target is too wide for either. It never
+  covers the thing it points at.
+- Lumi is the guide: `LumiMascot` with `interactive={false}` (new prop — no
+  click, no speech bubble, out of the tab order).
+- Runs once per browser (`localStorage` key `strekly_tour_seen`), auto-started
+  on the first visit to `/home`; replayable from Settings → About via
+  `TourButton`.

@@ -2,17 +2,11 @@ import { cookies } from "next/headers";
 import { NextResponse, type NextRequest } from "next/server";
 import { createAuthActions, createServerClient } from "@insforge/sdk/ssr";
 import { serializeRememberedAccount } from "@/lib/remembered-account";
+import { MOOD_SCALE } from "@/lib/mood-scale";
+import { STARTER_CATEGORIES, STARTER_HABITS } from "@/lib/starter-habits";
 
-/** Exact faces/colors from MoodPage.png / trakcer UI.png (see context/ui-tokens.md).
- *  6-level scale since F26 (high = happier). */
-const DEFAULT_MOOD_LEVELS = [
-  { value: 6, label: "Very Happy", emoji: "😊", color: "#86D6BF" },
-  { value: 5, label: "Happy", emoji: "🙂", color: "#FCD34D" },
-  { value: 4, label: "Okay", emoji: "😐", color: "#7DD3FC" },
-  { value: 3, label: "Tired", emoji: "😴", color: "#A8A29E" },
-  { value: 2, label: "Sad", emoji: "☹️", color: "#FC8FA5" },
-  { value: 1, label: "Fu*ked Up", emoji: "🤯", color: "#A78BFA" },
-];
+/** The 6-level mood scale (see `lib/mood-scale.ts`) — seeded per account. */
+const DEFAULT_MOOD_LEVELS = MOOD_SCALE;
 
 type CookieReader = { get(name: string): string | undefined };
 
@@ -83,6 +77,87 @@ async function seedUserData(
     if (insertLevelsError) {
       console.error("[api/auth/callback] mood_levels insert", insertLevelsError.message);
     }
+  }
+
+  await seedStarterHabits(seedClient, userId);
+}
+
+/**
+ * Give a brand-new account the starter set: 3 categories and 6 universal
+ * habits, with no completions and no notes. The user can rename, edit,
+ * reorder, archive or delete every one of them.
+ *
+ * Guarded by an existence check and it fails CLOSED — if the read errors we
+ * do not seed, because duplicate habits are worse than no habits. This
+ * replaced the old demo seed, which copied the developer's own tracker
+ * (his habit names, statuses and journal notes) into every new account.
+ */
+async function seedStarterHabits(
+  seedClient: ReturnType<typeof createServerClient>,
+  userId: string,
+) {
+  try {
+    const { data: existing, error: existingError } = await seedClient.database
+      .from("habits")
+      .select("id")
+      .eq("user_id", userId)
+      .limit(1);
+
+    if (existingError) {
+      console.error(
+        "[api/auth/callback] starter habits check:",
+        existingError.message,
+      );
+      return;
+    }
+    if (Array.isArray(existing) && existing.length > 0) return;
+
+    const { data: categoryRows, error: categoryError } = await seedClient.database
+      .from("habit_categories")
+      .insert(
+        STARTER_CATEGORIES.map((category, index) => ({
+          user_id: userId,
+          name: category.name,
+          color: category.color,
+          sort_order: index,
+        })),
+      )
+      .select("id, name");
+
+    if (categoryError || !categoryRows) {
+      console.error(
+        "[api/auth/callback] starter categories insert:",
+        categoryError?.message,
+      );
+      return;
+    }
+
+    const categoryIdByName = new Map(
+      (categoryRows as Array<{ id: string; name: string }>).map((row) => [
+        row.name,
+        row.id,
+      ]),
+    );
+
+    const { error: habitError } = await seedClient.database.from("habits").insert(
+      STARTER_HABITS.map((habit, index) => ({
+        user_id: userId,
+        name: habit.name,
+        emoji: habit.emoji,
+        description: habit.description,
+        category_id: categoryIdByName.get(habit.category) ?? null,
+        sort_order: index,
+        active: true,
+      })),
+    );
+    if (habitError) {
+      console.error(
+        "[api/auth/callback] starter habits insert:",
+        habitError.message,
+      );
+    }
+  } catch (error) {
+    console.error("[api/auth/callback] seedStarterHabits", error);
   }
 }
 

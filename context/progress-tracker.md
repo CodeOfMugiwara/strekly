@@ -6,9 +6,9 @@ Update this file after every completed feature. Any AI agent reading this should
 
 ## Current Status
 
-**Phase:** 14.0 — Strekly launched on Netlify (Shipped)
-**Last completed:** The app is **live at https://strekly.netlify.app**. (1) **Renamed to Strekly** — wordmark, tagline ("Your streak, everyday."), metadata + openGraph, About card, export error copy, package name, README, and every `context/` doc. The mascot stays Lumi. (2) **Netlify deployment** — `netlify.toml` (Node 22, telemetry off, unpinned `@netlify/plugin-nextjs`), `.nvmrc`, the three `NEXT_PUBLIC_*` env vars set on the site (all scopes, production/preview/branch contexts), and the InsForge project's `allowed_redirect_urls` extended with the Netlify origin + its OAuth callback. (3) **The middleware had to move to the edge runtime** — Netlify's OpenNext adapter cannot package a Node-runtime `proxy.ts` on Next 16 (it copies only `middleware.js` into the edge function, not the runtime chunk it requires → `Cannot find module './webpack-runtime.js'` / `'./chunks/[turbopack]_runtime.js'`). This is upstream, still open: opennextjs-netlify#3562 and #3575. The legacy `middleware.ts` convention with `runtime: "experimental-edge"` emits a self-contained bundle and deploys cleanly. (4) **GitHub repo renamed** to `CodeOfMugiwara/strekly`.
-**Next:** Connect the repo to Netlify for auto-deploys (3 clicks in the Netlify UI — the API cannot link a repo without the Netlify GitHub App), then signed-in browser QA of the real pages and the sign-in → OAuth → app round-trip. Then the remaining product gaps: the `@radix-ui/react-tooltip` dependency is still unused.
+**Phase:** 14.1 — Starter habits for every account + the product tour (Shipped)
+**Last completed:** (1) **The personal demo seed is gone.** Every new account used to be handed a copy of the developer's own September 2026 tracker — his habit names, his statuses and his first-person journal notes ("Finally fixed my sleep schedule."). That seed is deleted; the data files behind it (`lib/mock-habits.ts`, `lib/mock-home.ts` and the `mockProfile` block holding the name "Krishna") are gone from the bundle. (RLS and every query were already correctly scoped — this was never a leak, it was a seed.) (2) **A universal starter set** — 3 categories (Health / Mind / Evening) + 6 habits with no history, seeded at sign-up in the OAuth callback. (3) **The product tour** — a spotlight that walks the real app across Home, Habits, Mood, Calendar, Stats and Settings, opens the profile popover for the user so they can see the name field, and runs once per browser (replayable from Settings → About).
+**Next:** Signed-in browser QA of the tour against the real pages (the anchors are verified in code and the engine is verified on a preview route, but the real run needs an account) and of a brand-new account's starter habits. Then the Netlify auto-deploy connection, and the remaining product gap: the `@radix-ui/react-tooltip` dependency is still unused.
 
 
 
@@ -124,6 +124,16 @@ Update this file after every completed feature. Any AI agent reading this should
 - [x] **Deployed and verified** — `https://strekly.netlify.app` serves the marketing page (title "Strekly - Habit & Mood Tracker", 12 "Strekly" hits, 0 "Habit Tracker"), `/login` renders, `/home` 307-redirects to `/login` (the edge middleware is live), `/api/auth/refresh` answers 405 on GET.
 - [ ] **Auto-deploys** — connect the repo in the Netlify UI (the API cannot link a GitHub repo without the Netlify GitHub App).
 - [ ] **Signed-in QA** — sign in with a real Google/GitHub account and click through Home, Habits, Mood, Stats, Calendar, Settings.
+
+### Phase 14.1 — Starter habits for every account + the product tour
+
+- [x] **The personal demo seed removed** — `lib/habits-data.ts` no longer seeds anything. The seed it used (`lib/mock-habits.ts` — the developer's own September 2026 tracker, with his habit names, statuses and first-person journal notes) and the `mockProfile` block holding `"Krishna"` are deleted. `lib/mock-home.ts` is gone; the mood scale moved to `lib/mood-scale.ts` and the quote to `lib/quotes.ts`.
+- [x] **Universal starter set** — `lib/starter-habits.ts`: 3 categories (Health `#34D399`, Mind `#A78BFA`, Evening `#60A5FA`) + 6 habits (Drink water, Move your body, Read 20 minutes, Journal, Sleep by 11 PM, No phone in bed), **no completions, no notes**. Every emoji maps to a real `HabitIcon` glyph.
+- [x] **Seeded at sign-up** — `app/api/auth/callback/route.ts` → `seedStarterHabits()`: categories first, then habits with their category ids. Guarded by an existence check, fail-closed.
+- [x] **The product tour** — `components/tour/`: `TourProvider` (the engine), `TourOverlay` (the spotlight + card), `TourButton` (replay), `tour-steps.ts` (11 steps). Mounted in the app layout. Auto-runs once per browser on `/home`; replayable from Settings → About.
+- [x] **Anchors added** — `data-tour` on the habit list, the week strip, the habits grid, a habit name, Add Habit, the mood chips, the calendar grid, the heatmap, the profile trigger, the name field and the theme swatches. `PopoverPanel` gained `triggerTourId`.
+- [x] **`LumiMascot` gained `interactive={false}`** — decorative mode: no click, no speech bubble, out of the tab order. Lumi is the guide in the tour card.
+- [x] **Verified** — `npx tsc --noEmit` 0 · `npm run lint` 0 · `next build` clean. The engine was driven end to end with Playwright + Edge on a temporary `/preview-tour` route (route deleted afterwards): every placement lands in the viewport, the card never covers its target, the popover step opens the panel itself and the panel is closed again when the step is left or the tour ends. All 12 anchor ids verified present in the source.
 
 ---
 

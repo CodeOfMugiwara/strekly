@@ -92,7 +92,7 @@ export function MonthCard({
       </div>
 
       {/* Legend chips — click to set mood for the selected day */}
-      <div className="mt-4 flex flex-wrap gap-2">
+      <div className="mt-4 flex flex-wrap gap-2" data-tour="mood-log">
         {levels.map((level) => {
           const active = selectedValue === level.value;
           return (

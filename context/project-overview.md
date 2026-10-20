@@ -64,8 +64,9 @@ Settings
 ### Onboarding
 
 - User signs in via InsForge auth (Google or GitHub OAuth)
-- After login → redirect to `/` (Home)
-- First load creates a `profiles` row with defaults (tracker title, welcome message, Lavender theme, 5-level mood scale, Monday week start)
+- After login → redirect to `/home` (Home)
+- Sign-up seeds a `profiles` row (defaults: Lavender theme, 6-level mood scale, Monday week start), the 6-level `mood_levels` set, and a **starter set**: 3 categories + 6 universal habits with **no history** (see `lib/starter-habits.ts`). The user can rename, edit, reorder, archive or delete every one of them.
+- The **product tour** auto-runs once per browser on the first visit to `/home`: a spotlight that walks Home → Habits → Mood → Calendar → Stats → Settings, and opens the profile popover so the user can see where their name lives. Replayable from Settings → About.
 
 ### Daily check-in (Home)
 
