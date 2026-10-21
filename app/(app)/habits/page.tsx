@@ -1,6 +1,8 @@
 import { loadHabitsPageData } from "@/lib/habits-data";
 import { HabitsView } from "@/components/habits/HabitsView";
 
+export const dynamic = "force-dynamic";
+
 export default async function HabitsPage() {
   const { habits, categories, statuses, notes, defaultView } =
     await loadHabitsPageData();

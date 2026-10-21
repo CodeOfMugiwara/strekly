@@ -6,6 +6,8 @@ import { TodayHabits } from "@/components/home/TodayHabits";
 import { WeekStrip } from "@/components/home/WeekStrip";
 import { loadHomeDashboard } from "@/lib/home-data";
 
+export const dynamic = "force-dynamic";
+
 export default async function HomePage() {
   const data = await loadHomeDashboard();
 

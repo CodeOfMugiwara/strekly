@@ -69,6 +69,30 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL("/home", request.url));
   }
 
+  /*
+    Auth-dependent routes must never be cached.
+
+    Every page under these paths reads the signed-in user's data via
+    `cookies()`. But Netlify's Durable Cache keys on URL + a fixed vary
+    list that does NOT include the auth cookies, so a response rendered
+    for one request state (or an anonymous prerender) gets replayed to
+    every visitor — the layout shell arrives but the per-user content
+    does not, which reads as a blank page behind the sidebar. The same
+    applies to Next's own full-route / prerender cache (`s-maxage`,
+    `x-nextjs-prerender`), which can serve a stale shell.
+
+    `no-store` on the standard, CDN, and Netlify-specific directives
+    keeps every one of these responses request-scoped end to end.
+  */
+  if (isProtectedRoute) {
+    response.headers.set(
+      "Cache-Control",
+      "private, no-store, max-age=0, must-revalidate",
+    );
+    response.headers.set("CDN-Cache-Control", "no-store");
+    response.headers.set("Netlify-CDN-Cache-Control", "no-store");
+  }
+
   return response;
 }
 

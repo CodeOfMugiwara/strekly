@@ -19,3 +19,53 @@
 
 [[plugins]]
   package = "@netlify/plugin-nextjs"
+
+# ---------------------------------------------------------------------------
+# Auth-dependent routes must never be cached at the CDN.
+#
+# Every page below reads the signed-in user's data with `cookies()`, so its
+# response is only valid for the request that produced it. Netlify's Durable
+# Cache keys on URL + a fixed vary list that does not include the InsForge
+# auth cookies, so without these rules a response rendered for one session
+# (or an anonymous prerender/redirect) can be replayed to everyone else —
+# the layout shell arrives but the per-user page content does not, which
+# reads as a blank content area behind the sidebar.
+#
+# `Netlify-CDN-Cache-Control` is the directive Netlify's CDN honors; the
+# plain `Cache-Control` keeps intermediate proxies honest too.
+# ---------------------------------------------------------------------------
+[[headers]]
+  for = "/home"
+  [headers.values]
+    Cache-Control = "private, no-store, max-age=0, must-revalidate"
+    Netlify-CDN-Cache-Control = "no-store"
+
+[[headers]]
+  for = "/habits"
+  [headers.values]
+    Cache-Control = "private, no-store, max-age=0, must-revalidate"
+    Netlify-CDN-Cache-Control = "no-store"
+
+[[headers]]
+  for = "/mood"
+  [headers.values]
+    Cache-Control = "private, no-store, max-age=0, must-revalidate"
+    Netlify-CDN-Cache-Control = "no-store"
+
+[[headers]]
+  for = "/stats"
+  [headers.values]
+    Cache-Control = "private, no-store, max-age=0, must-revalidate"
+    Netlify-CDN-Cache-Control = "no-store"
+
+[[headers]]
+  for = "/calendar"
+  [headers.values]
+    Cache-Control = "private, no-store, max-age=0, must-revalidate"
+    Netlify-CDN-Cache-Control = "no-store"
+
+[[headers]]
+  for = "/settings"
+  [headers.values]
+    Cache-Control = "private, no-store, max-age=0, must-revalidate"
+    Netlify-CDN-Cache-Control = "no-store"
