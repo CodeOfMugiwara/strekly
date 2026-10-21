@@ -7,6 +7,7 @@ import { MoodFacePop } from "@/components/ui/MoodFacePop";
 import { cn } from "@/lib/utils";
 import type { MoodDay, MoodLevel } from "@/lib/mood-view";
 import { MonthNav } from "@/components/ui/MonthNav";
+import { SlidingIndicator } from "@/components/ui/SlidingIndicator";
 
 type MonthCardProps = {
   monthLabel: string;
@@ -62,29 +63,35 @@ export function MonthCard({
                 type="button"
                 onClick={() => onSelectDay(day.day)}
                 className={cn(
-                  "flex w-14 shrink-0 flex-col items-center gap-1.5 rounded-xl border-2 px-1 py-2.5 transition-colors",
+                  "relative flex w-14 shrink-0 flex-col items-center gap-1.5 rounded-xl border-2 border-transparent px-1 py-2.5 transition-colors",
                   "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40",
-                  selected
-                    ? "border-primary bg-surface shadow-card"
-                    : "border-transparent hover:bg-surface-hover",
+                  !selected && "hover:bg-surface-hover",
                 )}
               >
-                <span className="text-[11px] text-text-muted">
+                {selected ? (
+                  <SlidingIndicator
+                    layoutId="mood-day-pill"
+                    className="rounded-xl border-2 border-primary bg-surface shadow-card"
+                  />
+                ) : null}
+                <span className="relative z-10 text-[11px] text-text-muted">
                   {day.weekday}
                 </span>
                 <span
                   className={cn(
-                    "text-xs font-medium",
+                    "relative z-10 text-xs font-medium",
                     selected ? "text-text" : "text-text-secondary",
                   )}
                 >
                   {day.day}
                 </span>
-                {level ? (
-                  <MoodFacePop value={level.value} color={level.color} size={30} />
-                ) : (
-                  <span className="h-[30px] w-[30px] rounded-full border border-dashed border-border" />
-                )}
+                <span className="relative z-10">
+                  {level ? (
+                    <MoodFacePop value={level.value} color={level.color} size={30} />
+                  ) : (
+                    <span className="block h-[30px] w-[30px] rounded-full border border-dashed border-border" />
+                  )}
+                </span>
               </button>
             );
           })}

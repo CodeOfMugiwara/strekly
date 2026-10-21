@@ -10,7 +10,8 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
-import { cn } from "@/lib/utils";
+import { MotionSwap } from "@/components/ui/MotionSwap";
+import { SegmentedControl } from "@/components/ui/SegmentedControl";
 import type { CompletionBucket, StatsGranularity } from "@/lib/stats";
 
 type CompletionOverviewCardProps = {
@@ -68,53 +69,35 @@ export function CompletionOverviewCard({
         <h2 className="text-base font-semibold text-text">
           Completion Overview
         </h2>
-        <div
-          className="flex items-center gap-1"
-          role="group"
-          aria-label="Granularity"
-        >
-          {GRANULARITIES.map((g) => (
-            <button
-              key={g}
-              type="button"
-              onClick={() => onGranularityChange(g)}
-              className={cn(
-                "rounded-full px-4 py-1.5 text-sm font-medium transition-colors",
-                "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40",
-                granularity === g
-                  ? "bg-primary text-primary-on"
-                  : "text-text-muted hover:text-text",
-              )}
-            >
-              {g}
-            </button>
-          ))}
-        </div>
+        <SegmentedControl
+          items={GRANULARITIES.map((g) => ({ value: g, label: g }))}
+          value={granularity}
+          onChange={onGranularityChange}
+          layoutId="stats-granularity-pill"
+          ariaLabel="Granularity"
+        />
       </div>
 
-      {activeHabitCount === 0 ? (
-        <div className="flex h-64 items-center justify-center">
-          <p className="text-sm text-text-muted">
-            Add a habit to start tracking your progress.
-          </p>
-        </div>
-      ) : series.length === 0 ? (
-        <div className="flex h-64 items-center justify-center">
-          <p className="text-sm text-text-muted">
-            No completion data yet — check off a habit to see your progress.
-          </p>
-        </div>
-      ) : (
-        <div className="mt-4 h-64 min-w-0">
-          <ResponsiveContainer
-            key={`${granularity}:${series[0]?.tick ?? ""}:${series.length}`}
-            width="100%"
-            height="100%"
-          >
-            <BarChart
-              data={series}
-              margin={{ top: 8, right: 8, bottom: 0, left: 0 }}
-            >
+      <MotionSwap swapKey={granularity} className="min-w-0">
+        {activeHabitCount === 0 ? (
+          <div className="flex h-64 items-center justify-center">
+            <p className="text-sm text-text-muted">
+              Add a habit to start tracking your progress.
+            </p>
+          </div>
+        ) : series.length === 0 ? (
+          <div className="flex h-64 items-center justify-center">
+            <p className="text-sm text-text-muted">
+              No completion data yet — check off a habit to see your progress.
+            </p>
+          </div>
+        ) : (
+          <div className="mt-4 h-64 min-w-0">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart
+                data={series}
+                margin={{ top: 8, right: 8, bottom: 0, left: 0 }}
+              >
               <CartesianGrid
                 strokeDasharray="3 3"
                 stroke="var(--color-border)"
@@ -152,7 +135,8 @@ export function CompletionOverviewCard({
             </BarChart>
           </ResponsiveContainer>
         </div>
-      )}
+        )}
+      </MotionSwap>
     </Card>
   );
 }

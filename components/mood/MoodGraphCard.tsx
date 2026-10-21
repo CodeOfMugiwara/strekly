@@ -11,7 +11,8 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
-import { Dropdown, type DropdownOption } from "@/components/ui/Dropdown";
+import { MotionSwap } from "@/components/ui/MotionSwap";
+import { SegmentedControl } from "@/components/ui/SegmentedControl";
 import { makeRevealAreaShape, type RevealDotInput } from "@/components/ui/RevealAreaShape";
 import { MoodFace } from "@/components/ui/MoodFace";
 import type { GraphPeriod, GraphSeriesPoint, MoodLevel } from "@/lib/mood-view";
@@ -23,7 +24,7 @@ type MoodGraphCardProps = {
   onPeriodChange: (period: GraphPeriod) => void;
 };
 
-const PERIOD_OPTIONS: Array<DropdownOption<GraphPeriod>> = [
+const PERIOD_OPTIONS: Array<{ value: GraphPeriod; label: string }> = [
   { value: "month", label: "This Month" },
   { value: "90d", label: "Last 3 Months" },
   { value: "year", label: "This Year" },
@@ -116,11 +117,11 @@ export function MoodGraphCard({
           <h2 className="text-base font-semibold text-text">Mood Graph</h2>
           <p className="mt-0.5 text-xs text-text-muted">{SUBTITLES[period]}</p>
         </div>
-        <Dropdown
-          options={PERIOD_OPTIONS}
+        <SegmentedControl
+          items={PERIOD_OPTIONS}
           value={period}
           onChange={onPeriodChange}
-          align="right"
+          layoutId="mood-graph-period"
           ariaLabel="Graph period"
         />
       </div>
@@ -140,8 +141,8 @@ export function MoodGraphCard({
             ))}
         </div>
 
-        <div
-          key={`${period}:${series[0]?.key ?? ""}:${series[series.length - 1]?.key ?? ""}`}
+        <MotionSwap
+          swapKey={`${period}:${series[0]?.key ?? ""}:${series[series.length - 1]?.key ?? ""}`}
           className="h-64 min-w-0 flex-1"
         >
           <ResponsiveContainer width="100%" height="100%">
@@ -201,7 +202,7 @@ export function MoodGraphCard({
               />
             </AreaChart>
           </ResponsiveContainer>
-        </div>
+        </MotionSwap>
       </div>
     </Card>
   );

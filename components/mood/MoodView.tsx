@@ -19,6 +19,7 @@ import {
 } from "@/lib/mood-view";
 import { buildMoodInsightRows, computeMoodPattern } from "@/lib/insights";
 import { ScriptQuote } from "@/components/ui/ScriptQuote";
+import { MotionSwap, type SwapDirection } from "@/components/ui/MotionSwap";
 import { LumiMascot } from "@/components/mascot/LumiMascot";
 
 export function MoodView({ initialData }: { initialData: MonthMoodData }) {
@@ -26,6 +27,7 @@ export function MoodView({ initialData }: { initialData: MonthMoodData }) {
   const [period, setPeriod] = useState<GraphPeriod>("month");
   const [rangeData, setRangeData] = useState<MoodRangeData | null>(null);
   const [loadError, setLoadError] = useState<string | null>(null);
+  const [direction, setDirection] = useState<SwapDirection>(1);
   const [selectedDay, setSelectedDay] = useState(() => {
     const now = new Date();
     if (
@@ -62,6 +64,7 @@ export function MoodView({ initialData }: { initialData: MonthMoodData }) {
       : "Not enough data to spot a pattern yet.");
 
   const goMonth = (delta: number) => {
+    setDirection(delta > 0 ? 1 : -1);
     let newMonth = data.month + delta;
     let newYear = data.year;
     if (newMonth < 0) {
@@ -210,7 +213,11 @@ export function MoodView({ initialData }: { initialData: MonthMoodData }) {
         ) : null}
 
         <div className="grid items-start gap-6 xl:grid-cols-[minmax(0,1fr)_300px]">
-          <div className="space-y-4">
+          <MotionSwap
+            swapKey={`${data.year}-${data.month}`}
+            direction={direction}
+            className="space-y-4"
+          >
             <MonthCard
               monthLabel={data.monthLabel}
               days={days}
@@ -239,7 +246,7 @@ export function MoodView({ initialData }: { initialData: MonthMoodData }) {
               onSelectNoteDay={setSelectedDay}
               onNoteChange={handleNoteChange}
             />
-          </div>
+          </MotionSwap>
           <MoodSidebar
             distribution={distribution}
             levels={data.levels}

@@ -2347,3 +2347,59 @@ deploys are manual (`npx netlify deploy --build --prod`, dev server stopped).
 - The tour has not been seen on the real pages — only on the preview route. The anchors are verified in code, the geometry is not.
 - The Netlify site is still not linked to GitHub (auto-deploys need the Netlify UI).
 - Unchanged carry-forwards: `@radix-ui/react-tooltip` unused; login `?redirect=` not applied after OAuth; Mood Daily/Weekly/Monthly pills chrome-only; touch heat tooltip; OAuth e2e QA.
+
+---
+
+### Phase 14.2 - Page blank fix + in-page motion rollout (Complete)
+
+**Context:** The developer reported every page except Home and Settings loading
+blank in production. Diagnosis: `PageTransition` keyed `AnimatePresence` on
+`usePathname()`; in production the RSC payload updates `children` before the
+pathname, so the incoming page mounted under the old key, animated out, and was
+never re-shown ("appeared for a split second then vanished"). Route-level
+animation removed entirely (`components/layout/PageTransition.tsx` deleted,
+`app/(app)/layout.tsx` renders `{children}`). The uncommitted `force-dynamic` +
+`no-store` cache headers were kept.
+
+Then: roll the Settings motion language out to the other pages.
+
+**What was built:**
+- `components/ui/MotionSwap.tsx` - the Settings pane recipe extracted:
+  `AnimatePresence mode="wait" initial={false}`, enter from -16px / exit to
+  +16px, 0.32s `EASE_IN` / 0.28s `EASE_OUT`, optional direction (`1` next,
+  `-1` prev). Explicitly state-keyed, never pathname-keyed.
+- `components/ui/SegmentedControl.tsx` - pill switch using
+  `SlidingIndicator` + shared `layoutId`.
+- Stats: Completion Overview granularity and Key Insights period converted to
+  sliding pills; charts/lists cross-fade on change.
+- Mood: graph period converted to sliding pills; left column (month card,
+  graph, notes) swaps directionally on month change; selected date uses a
+  sliding pill.
+- Calendar: selected cell uses `calendar-day-pill`; grid swaps directionally
+  by `year-month`.
+- Habits: grid + graph swap directionally by `year-month`.
+- Dropdown menu `.menu-in` (160ms) and `SaveStatusLine` `.status-in` (150ms).
+- SettingsShell refactored onto `MotionSwap` (visual result unchanged).
+
+**Verification:**
+- `npx tsc --noEmit` 0 - `npm run lint` 0 - `next build` clean (all app routes
+  still dynamic).
+- Authenticated Playwright + Edge (admin-created QA user, seeded 3 habits,
+  56 completions, 13 mood entries; user deleted afterwards):
+  - Stats pill measured `619.8 -> 721.7 -> 766.3` across one click (real
+    interpolation), charts rendered.
+  - Mood pill moved `738.4 -> 845.6`; "Last 3 Months" subtitle/chart updated.
+  - Habits Oct -> Sep and Calendar Oct -> Nov swaps rendered.
+  - Client-side nav Home -> Habits -> Mood -> Stats -> Calendar -> Settings ->
+    Home rendered each page with no page errors.
+  - Reduced-motion context: transform `none`, content visible, pill still
+    correct.
+
+**Current state:** Build + lint + tsc clean. Production blank-page cause is
+removed; all interactive switches share the Settings motion language.
+
+**Open questions:**
+- Needs one production deploy + signed-in click-through (the prior fix was
+  also verified locally before the production-only failure surfaced).
+- Unchanged carry-forwards: development reminders, OAuth e2e QA, login
+  `?redirect=`, touch heat tooltip.

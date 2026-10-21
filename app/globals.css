@@ -1021,6 +1021,18 @@ body {
   }
 }
 
+/* Dropdown panels: fade + a 4px rise, short enough to feel instant. */
+@keyframes menu-in {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 /* Heatmap cell entrance — a small pop-in used by the Stats contribution
    grids. Scale + fade, with `backwards` fill so the element's own
    transform stays free for the hover pop. */
@@ -1099,6 +1111,15 @@ body {
      every popover (Settings profile / notifications) opened with no motion. */
   .modal-in {
     animation: modal-in 0.28s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+
+  .menu-in {
+    animation: menu-in 0.16s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+
+  /* Save-status lines swap text; a 150ms fade keeps it from flickering. */
+  .status-in {
+    animation: soft-fade-in 0.15s ease-out both;
   }
 
   /* Hide scrollbars on horizontal strips (mood date strip, settings nav) */
@@ -1279,6 +1300,8 @@ body {
   .modal-backdrop,
   .modal-panel,
   .modal-in,
+  .menu-in,
+  .status-in,
   .aurora-orb,
   .status-pop,
   .animate-float,

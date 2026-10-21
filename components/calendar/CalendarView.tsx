@@ -23,6 +23,7 @@ import { parseLocal } from "@/lib/stats";
 import type { HabitCompletion } from "@/types";
 import { ScriptQuote } from "@/components/ui/ScriptQuote";
 import { LumiMascot } from "@/components/mascot/LumiMascot";
+import type { SwapDirection } from "@/components/ui/MotionSwap";
 
 const DECORATIVE_QUOTE = "Consistency today creates\na brighter tomorrow. 💜";
 
@@ -37,6 +38,7 @@ export function CalendarView({ data }: CalendarViewProps) {
     month: today.getMonth(),
   });
   const [selectedKey, setSelectedKey] = useState(data.todayKey);
+  const [direction, setDirection] = useState<SwapDirection>(1);
 
   // Client-authoritative copies (seeded once from props — never re-synced,
   // the F15 no-snap rule). Mutations are optimistic with revert-on-fail.
@@ -63,16 +65,31 @@ export function CalendarView({ data }: CalendarViewProps) {
   );
   const selectedMoodValue = data.moodValues[selectedKey];
 
-  const goPrevMonth = () => setView((v) => shiftMonth(v.year, v.month, -1));
-  const goNextMonth = () => setView((v) => shiftMonth(v.year, v.month, 1));
+  const goPrevMonth = () => {
+    setDirection(-1);
+    setView((v) => shiftMonth(v.year, v.month, -1));
+  };
+  const goNextMonth = () => {
+    setDirection(1);
+    setView((v) => shiftMonth(v.year, v.month, 1));
+  };
   const goToday = () => {
+    const index = today.getFullYear() * 12 + today.getMonth();
+    const current = view.year * 12 + view.month;
+    if (index !== current) setDirection(index > current ? 1 : -1);
     setView({ year: today.getFullYear(), month: today.getMonth() });
     setSelectedKey(data.todayKey);
   };
   const selectDay = (dateKey: string) => {
     setSelectedKey(dateKey);
     const date = parseLocal(dateKey);
-    setView({ year: date.getFullYear(), month: date.getMonth() });
+    const target = { year: date.getFullYear(), month: date.getMonth() };
+    const targetIndex = target.year * 12 + target.month;
+    const currentIndex = view.year * 12 + view.month;
+    if (targetIndex !== currentIndex) {
+      setDirection(targetIndex > currentIndex ? 1 : -1);
+    }
+    setView(target);
   };
   const shiftSelected = (delta: number) => selectDay(shiftDay(selectedKey, delta));
 
@@ -158,6 +175,7 @@ export function CalendarView({ data }: CalendarViewProps) {
             onNext={goNextMonth}
             onToday={goToday}
             onSelect={selectDay}
+            direction={direction}
           />
           <DayDetailsCard
             dateKey={selectedKey}

@@ -1287,3 +1287,39 @@ Last updated: Phase 14.1
 - Runs once per browser (`localStorage` key `strekly_tour_seen`), auto-started
   on the first visit to `/home`; replayable from Settings → About via
   `TourButton`.
+
+### Phase 14.2 — In-page motion rollout (Settings language on every page)
+
+Files: `components/ui/{MotionSwap,SegmentedControl}.tsx`, `components/settings/SettingsShell.tsx`, `components/{stats/CompletionOverviewCard,stats/KeyInsightsCard,mood/MoodGraphCard,mood/MonthCard,mood/MoodView,habits/HabitsView,calendar/MonthCard,calendar/CalendarView,ui/Dropdown,ui/SaveStatusLine}.tsx`, `app/globals.css`
+Last updated: Phase 14.2
+
+**The route transition is gone, deliberately.** `PageTransition` keyed
+`AnimatePresence` on `usePathname()`. In production the RSC payload commits
+before the pathname, so the incoming page mounted under the old key, animated
+out and never returned — the "page appears for a split second then vanishes"
+bug. Pages are now wrapped by nothing; only local state changes animate.
+
+**Primitives (use these, do not re-implement):**
+
+| Primitive | Behaviour |
+|-----------|-----------|
+| `SlidingIndicator` | `motion.span` + shared `layoutId`, spring `420/34`. Active background glides between items. |
+| `SegmentedControl` | Pill switch built on `SlidingIndicator`; `role="group"` + `aria-pressed`; `bg-primary-lightest` active pill, `text-primary-text` label. `layoutId` must be unique per instance. |
+| `MotionSwap` | The Settings pane recipe: `AnimatePresence mode="wait" initial={false}`, enter `-16→0` / exit `0→+16`, 0.32s `EASE_IN` / 0.28s `EASE_OUT`, `direction` for ±. Never key it by pathname. |
+
+**Applied:**
+
+| Where | Motion |
+|-------|--------|
+| Stats — Completion Overview | Sliding `stats-granularity-pill`; chart pane `MotionSwap` per granularity |
+| Stats — Key Insights | Sliding `stats-insights-period`; list `MotionSwap` per period |
+| Mood — graph | Sliding `mood-graph-period`; chart `MotionSwap` per period + range |
+| Mood — month | Left column `MotionSwap` by `year-month`, direction from prev/next |
+| Mood — day strip | `mood-day-pill` slides between selected dates |
+| Calendar — day grid | `calendar-day-pill` slides; grid `MotionSwap` by `year-month`, direction from prev/next |
+| Habits — month | Grid + graph `MotionSwap` by `year-month`, direction from prev/next |
+| Dropdown | `.menu-in` fade + 4px rise, 160ms |
+| Save status | `.status-in` 150ms fade on state change |
+
+All pane swaps honour `useReducedMotion`; the CSS `.menu-in` / `.status-in`
+are covered by the global reduced-motion kill-switch.

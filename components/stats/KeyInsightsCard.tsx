@@ -2,11 +2,12 @@
 
 import { Card } from "@/components/ui/Card";
 import { Calendar, Moon, Smile, TrendingUp } from "lucide-react";
-import { Dropdown, type DropdownOption } from "@/components/ui/Dropdown";
+import { MotionSwap } from "@/components/ui/MotionSwap";
+import { SegmentedControl } from "@/components/ui/SegmentedControl";
 import { cn } from "@/lib/utils";
 import type { InsightPeriod, KeyInsight } from "@/lib/insights";
 
-const PERIOD_OPTIONS: Array<DropdownOption<InsightPeriod>> = [
+const PERIOD_OPTIONS: Array<{ value: InsightPeriod; label: string }> = [
   { value: "this-month", label: "This Month" },
   { value: "last-3-months", label: "Last 3 Months" },
   { value: "this-year", label: "This Year" },
@@ -53,16 +54,17 @@ export function KeyInsightsCard({
           </span>
           <h2 className="text-base font-semibold text-text">Key Insights</h2>
         </div>
-        <Dropdown
-          options={PERIOD_OPTIONS}
+        <SegmentedControl
+          items={PERIOD_OPTIONS}
           value={period}
           onChange={onPeriodChange}
-          align="right"
+          layoutId="stats-insights-period"
           ariaLabel="Insights period"
         />
       </div>
 
-      <ul className="mt-4 space-y-3">
+      <MotionSwap swapKey={period}>
+        <ul className="mt-4 space-y-3">
         {insights.map((insight) => {
           const Icon = ICONS[insight.icon];
           return (
@@ -84,7 +86,8 @@ export function KeyInsightsCard({
             </li>
           );
         })}
-      </ul>
+        </ul>
+      </MotionSwap>
     </Card>
   );
 }

@@ -8,6 +8,9 @@ export type SaveStatus = "idle" | "saving" | "saved" | "error";
  * `components/settings/SaveStatusLine.tsx` and the private
  * `PersistStatusLine` inside `AppearanceCard.tsx` were near-identical
  * copies with slightly different copy. Both now render this component.
+ *
+ * The key on the paragraph remounts it when the status changes, so each
+ * state fades in instead of swapping text abruptly.
  */
 export function SaveStatusLine({
   status,
@@ -22,32 +25,28 @@ export function SaveStatusLine({
   error?: string | null;
   className?: string;
 }) {
-  if (status === "saving") {
-    return (
-      <p className={cn("text-xs text-text-muted", className)} role="status">
-        Saving to profile…
-      </p>
-    );
-  }
-  if (status === "saved") {
-    return (
-      <p
-        className={cn("text-xs text-success-foreground", className)}
-        role="status"
-      >
-        Saved to your profile
-      </p>
-    );
-  }
-  if (status === "error") {
-    return (
-      <p
-        className={cn("text-xs text-error-foreground", className)}
-        role="alert"
-      >
-        {error ?? "Couldn’t save — changes stay on this page only."}
-      </p>
-    );
-  }
-  return <p className={cn("text-xs text-text-muted", className)}>{idle}</p>;
+  const content =
+    status === "saving"
+      ? "Saving to profile…"
+      : status === "saved"
+        ? "Saved to your profile"
+        : status === "error"
+          ? (error ?? "Couldn't save — changes stay on this page only.")
+          : idle;
+
+  return (
+    <p
+      key={status}
+      role={status === "error" ? "alert" : status === "idle" ? undefined : "status"}
+      className={cn(
+        "status-in text-xs",
+        status === "saved" && "text-success-foreground",
+        status === "error" && "text-error-foreground",
+        status !== "saved" && status !== "error" && "text-text-muted",
+        className,
+      )}
+    >
+      {content}
+    </p>
+  );
 }

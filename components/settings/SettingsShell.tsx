@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import {
   Database,
   Heart,
@@ -19,14 +18,8 @@ import { HabitPreferencesCard } from "@/components/settings/HabitPreferencesCard
 import { ManageHabitsCard } from "@/components/settings/ManageHabitsCard";
 import { SettingsHeaderActions } from "@/components/settings/SettingsHeaderActions";
 import { SlidingIndicator } from "@/components/ui/SlidingIndicator";
+import { MotionSwap } from "@/components/ui/MotionSwap";
 import { cn } from "@/lib/utils";
-import {
-  EASE_IN,
-  EASE_OUT,
-  ENTER_DURATION,
-  EXIT_DURATION,
-  SLIDE_DISTANCE,
-} from "@/lib/motion";
 import type {
   SettingsCategory,
   SettingsHabit,
@@ -80,7 +73,6 @@ export function SettingsShell({
   moodLevels,
 }: SettingsShellProps) {
   const [section, setSection] = useState<SectionKey>("appearance");
-  const reducedMotion = useReducedMotion();
 
   return (
     <div className="space-y-6">
@@ -141,43 +133,22 @@ export function SettingsShell({
         </nav>
 
         <div className="min-w-0">
-          <AnimatePresence mode="wait" initial={false}>
-            <motion.div
-              key={section}
-              initial={
-                reducedMotion
-                  ? false
-                  : {
-                      opacity: 0,
-                      x: -SLIDE_DISTANCE,
-                      transition: { duration: ENTER_DURATION, ease: EASE_IN },
-                    }
-              }
-              animate={{ opacity: 1, x: 0 }}
-              exit={
-                reducedMotion
-                  ? undefined
-                  : {
-                      opacity: 0,
-                      x: SLIDE_DISTANCE,
-                      transition: { duration: EXIT_DURATION, ease: EASE_OUT },
-                    }
-              }
-            >
-              {section === "appearance" ? <AppearanceCard /> : null}
-              {section === "preferences" ? (
-                <HabitPreferencesCard profile={profile} />
-              ) : null}
-              {section === "habits" ? (
-                <ManageHabitsCard habits={habits} categories={categories} />
-              ) : null}
-              {section === "categories" ? (
-                <CategoriesCard initialCategories={categories} />
-              ) : null}
-              {section === "data" ? <DataManagementCard /> : null}
-              {section === "about" ? <AboutCard /> : null}
-            </motion.div>
-          </AnimatePresence>
+          {/* Settings keeps its cross-fade; `direction={-1}` is the original
+              "in from the left, out to the right" gesture. */}
+          <MotionSwap swapKey={section} direction={-1}>
+            {section === "appearance" ? <AppearanceCard /> : null}
+            {section === "preferences" ? (
+              <HabitPreferencesCard profile={profile} />
+            ) : null}
+            {section === "habits" ? (
+              <ManageHabitsCard habits={habits} categories={categories} />
+            ) : null}
+            {section === "categories" ? (
+              <CategoriesCard initialCategories={categories} />
+            ) : null}
+            {section === "data" ? <DataManagementCard /> : null}
+            {section === "about" ? <AboutCard /> : null}
+          </MotionSwap>
         </div>
       </div>
     </div>

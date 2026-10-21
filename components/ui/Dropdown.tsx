@@ -70,7 +70,7 @@ export function Dropdown<T extends string = string>({
       {open && (
         <div
           className={cn(
-            "absolute z-50 mt-1 min-w-36 overflow-hidden rounded-lg border border-border bg-surface py-1 shadow-pop",
+            "menu-in absolute z-50 mt-1 min-w-36 overflow-hidden rounded-lg border border-border bg-surface py-1 shadow-pop",
             align === "right" ? "right-0" : "left-0",
           )}
         >

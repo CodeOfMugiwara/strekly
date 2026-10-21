@@ -5,6 +5,7 @@ import { Plus } from "lucide-react";
 import { setHabitCompletion } from "@/actions/completions";
 import { Button } from "@/components/ui/Button";
 import { MonthNav } from "@/components/ui/MonthNav";
+import { MotionSwap, type SwapDirection } from "@/components/ui/MotionSwap";
 import { HabitGridCard } from "@/components/habits/HabitGridCard";
 import { HabitGraphCard } from "@/components/habits/HabitGraphCard";
 import { NoteModal } from "@/components/habits/NoteModal";
@@ -48,6 +49,7 @@ export function HabitsView({
 }: HabitsViewProps) {
   const [year, setYear] = useState(defaultView.year);
   const [month, setMonth] = useState(defaultView.month);
+  const [direction, setDirection] = useState<SwapDirection>(1);
   const [habits, setHabits] = useState<GridHabit[]>(initialHabits);
   const [statuses, setStatuses] = useState<StatusMap>(initialStatuses);
   const [notes, setNotes] = useState<Record<string, string>>(initialNotes);
@@ -112,6 +114,7 @@ export function HabitsView({
   }, [statuses, sortedHabits, year, month]);
 
   const goPrev = () => {
+    setDirection(-1);
     if (month === 0) {
       setMonth(11);
       setYear((y) => y - 1);
@@ -121,6 +124,7 @@ export function HabitsView({
   };
 
   const goNext = () => {
+    setDirection(1);
     if (month === 11) {
       setMonth(0);
       setYear((y) => y + 1);
@@ -245,6 +249,9 @@ export function HabitsView({
 
   const goToday = () => {
     const now = new Date();
+    const current = new Date(year, month, 1).getTime();
+    const target = new Date(now.getFullYear(), now.getMonth(), 1).getTime();
+    if (current !== target) setDirection(target > current ? 1 : -1);
     setYear(now.getFullYear());
     setMonth(now.getMonth());
   };
@@ -284,6 +291,11 @@ export function HabitsView({
         </div>
       </div>
 
+      <MotionSwap
+        swapKey={`${year}-${month}`}
+        direction={direction}
+        className="space-y-5"
+      >
       <HabitGridCard
         habits={sortedHabits}
         daysInMonth={totalDays}
@@ -307,6 +319,7 @@ export function HabitsView({
       />
 
       <HabitGraphCard series={monthSeries} year={year} month={month} />
+      </MotionSwap>
 
       {noteDay !== null && (
         <NoteModal

@@ -10,6 +10,8 @@ import {
 } from "@/lib/calendar";
 import { cn } from "@/lib/utils";
 import { MonthNav, TodayButton } from "@/components/ui/MonthNav";
+import { MotionSwap, type SwapDirection } from "@/components/ui/MotionSwap";
+import { SlidingIndicator } from "@/components/ui/SlidingIndicator";
 
 const DOT_CLASS: Record<string, string> = {
   done: "bg-success-strong",
@@ -28,6 +30,8 @@ type MonthCardProps = {
   onNext: () => void;
   onToday: () => void;
   onSelect: (dateKey: string) => void;
+  /** Which way the user moved: 1 = next, -1 = previous. */
+  direction: SwapDirection;
 };
 
 export function MonthCard({
@@ -41,6 +45,7 @@ export function MonthCard({
   onNext,
   onToday,
   onSelect,
+  direction,
 }: MonthCardProps) {
   const cells = buildMonthCells(year, month, weekStartsOn);
 
@@ -69,7 +74,8 @@ export function MonthCard({
         ))}
       </div>
 
-      <div className="grid grid-cols-7 gap-1.5" data-tour="calendar-grid">
+      <MotionSwap swapKey={`${year}-${month}`} direction={direction}>
+        <div className="grid grid-cols-7 gap-1.5" data-tour="calendar-grid">
         {cells.map((cell, idx) => {
           const delay = `${Math.floor(idx / 7) * 30 + (idx % 7) * 15}ms`;
           if (!cell.inMonth) {
@@ -96,15 +102,20 @@ export function MonthCard({
               aria-pressed={isSelected}
               style={{ animationDelay: delay }}
               className={cn(
-                "cal-cell flex min-h-[76px] flex-col items-center gap-1 rounded-lg px-1 py-1.5",
+                "cal-cell relative flex min-h-[76px] flex-col items-center gap-1 rounded-lg border-2 border-transparent px-1 py-1.5",
                 "hover:bg-surface-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40",
-                isSelected && "border-2 border-primary",
-                !isSelected && isToday && "border border-primary/60",
+                !isSelected && isToday && "border-primary/60",
               )}
             >
+              {isSelected ? (
+                <SlidingIndicator
+                  layoutId="calendar-day-pill"
+                  className="rounded-lg border-2 border-primary bg-surface"
+                />
+              ) : null}
               <span
                 className={cn(
-                  "text-sm",
+                  "relative z-10 text-sm",
                   isSelected || isToday
                     ? "font-semibold text-text"
                     : "text-text-secondary",
@@ -114,7 +125,7 @@ export function MonthCard({
               </span>
               <span
                 aria-hidden
-                className="flex min-h-[6px] items-center justify-center gap-[3px]"
+                className="relative z-10 flex min-h-[6px] items-center justify-center gap-[3px]"
               >
                 {(data?.dots ?? []).map((status, i) => (
                   <span
@@ -131,14 +142,16 @@ export function MonthCard({
                   value={data.face.value}
                   color={data.face.color}
                   size={22}
+                  className="relative z-10"
                 />
               ) : (
-                <span className="h-[22px]" aria-hidden />
+                <span className="relative z-10 h-[22px]" aria-hidden />
               )}
             </button>
           );
         })}
-      </div>
+        </div>
+      </MotionSwap>
     </Card>
   );
 }
