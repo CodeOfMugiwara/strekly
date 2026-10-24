@@ -5,28 +5,22 @@ import { GripVertical, StickyNote } from "lucide-react";
 import { motion } from "motion/react";
 import { HabitIcon } from "@/components/ui/HabitIcon";
 import { StatusPop } from "@/components/ui/StatusPop";
+import { StatusGlyph } from "@/components/ui/StatusGlyph";
 import { cn } from "@/lib/utils";
 import type { GridHabit, StatusMap } from "@/lib/habits-data";
 import type { HabitStatus } from "@/types";
 
 const cellClasses: Record<string, string> = {
-  done: "border-transparent bg-success text-success-foreground glow-success shadow-xs",
-  partial: "border-transparent bg-warning text-warning-foreground glow-warning shadow-xs",
-  missed: "border-transparent bg-error text-error-foreground shadow-xs",
+  done: "border-transparent bg-success text-success-foreground shadow-subtle [box-shadow:inset_0_1px_0_0_rgba(255,255,255,0.25)]",
+  partial: "border-transparent bg-warning text-warning-foreground shadow-subtle [box-shadow:inset_0_1px_0_0_rgba(255,255,255,0.25)]",
+  missed: "border-transparent bg-error text-error-foreground shadow-subtle [box-shadow:inset_0_1px_0_0_rgba(255,255,255,0.25)]",
   unset: "border-border/80 bg-surface text-transparent hover:border-primary/50",
 };
 
-const glyphs: Record<string, string> = {
-  done: "✓",
-  partial: "~",
-  missed: "✗",
-  unset: "",
-};
-
-const LEGEND = [
-  { label: "Done", glyph: "✓", className: cellClasses.done },
-  { label: "Partial", glyph: "~", className: cellClasses.partial },
-  { label: "Missed", glyph: "✗", className: cellClasses.missed },
+const LEGEND: Array<{ label: string; status: HabitStatus; className: string }> = [
+  { label: "Done", status: "done", className: cellClasses.done },
+  { label: "Partial", status: "partial", className: cellClasses.partial },
+  { label: "Missed", status: "missed", className: cellClasses.missed },
 ];
 
 type HabitGridCardProps = {
@@ -79,7 +73,7 @@ export function HabitGridCard({
         <div className="min-w-[680px]">
           {/* Day-number header */}
           <div className="flex items-end">
-            <div className="sticky left-0 z-20 w-44 shrink-0 bg-surface pr-2.5" />
+            <div className="sticky left-0 z-20 w-44 shrink-0 border-r border-border/40 bg-surface pr-2.5" />
             <div
               className="grid flex-1 gap-1"
               style={{ gridTemplateColumns: columns }}
@@ -88,9 +82,9 @@ export function HabitGridCard({
                 <div key={day} className="flex justify-center">
                   <span
                     className={cn(
-                      "flex h-6 min-w-6 items-center justify-center rounded-md px-1 text-[11px] font-medium",
+                      "flex h-6 min-w-6 items-center justify-center rounded-md px-1 text-[11px] font-medium tabular-nums",
                       todayDay === day
-                        ? "bg-primary font-bold text-primary-on"
+                        ? "bg-primary font-bold text-primary-on shadow-xs"
                         : "text-text-muted",
                     )}
                   >
@@ -102,8 +96,13 @@ export function HabitGridCard({
           </div>
 
           {/* Habit rows */}
-          <div className="mt-1.5 space-y-1">
-            {habits.map((habit) => (
+          {habits.length === 0 ? (
+            <div className="py-10 text-center text-sm text-text-muted">
+              No habits found in this category.
+            </div>
+          ) : (
+            <div className="mt-1.5 space-y-1">
+              {habits.map((habit) => (
               <motion.div
                 key={habit.id}
                 /* FLIP: when the order changes, each row glides to its new
@@ -130,7 +129,7 @@ export function HabitGridCard({
                     "ring-2 ring-primary/50",
                 )}
               >
-                <div className="sticky left-0 z-10 flex w-44 shrink-0 items-center gap-1.5 bg-surface pr-2.5">
+                <div className="sticky left-0 z-10 flex w-44 shrink-0 items-center gap-1.5 border-r border-border/40 bg-surface pr-2.5">
                   {habit.active ? (
                     <span
                       className="cursor-grab text-text-muted/60 hover:text-text-muted active:cursor-grabbing"
@@ -167,15 +166,18 @@ export function HabitGridCard({
                         aria-label={`${habit.name} — ${key}: ${status}`}
                         onClick={() => onCycle(habit.id, day)}
                         className={cn(
-                          "flex h-7 w-full items-center justify-center rounded-md border-2 text-[11px] font-bold transition-transform hover:scale-105",
+                          "flex h-7 w-full items-center justify-center rounded-lg border text-[11px] font-bold select-none",
+                          "transition-all duration-140 ease-[cubic-bezier(0.23,1,0.32,1)] hover:scale-105 active:scale-[0.92]",
                           "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40",
                           cellClasses[status],
                           todayDay === day &&
                             status === "unset" &&
-                            "border-primary bg-primary-lightest/40",
+                            "border-primary/80 bg-primary-lightest/40",
                         )}
                       >
-                        <StatusPop status={status}>{glyphs[status]}</StatusPop>
+                        <StatusPop status={status}>
+                          <StatusGlyph status={status} size={13} />
+                        </StatusPop>
                       </button>
                     );
                   })}
@@ -183,11 +185,12 @@ export function HabitGridCard({
                 </motion.div>
             ))}
           </div>
+          )}
 
 
           {/* Notes row */}
           <div className="mt-2.5 flex items-center">
-            <div className="sticky left-0 z-10 flex w-44 shrink-0 items-center bg-surface pr-2.5">
+            <div className="sticky left-0 z-10 flex w-44 shrink-0 items-center border-r border-border/40 bg-surface pr-2.5">
               <span className="text-sm font-medium text-text-muted">Notes</span>
             </div>
             <div
@@ -233,14 +236,14 @@ export function HabitGridCard({
           <div key={item.label} className="flex items-center gap-2">
             <span
               className={cn(
-                "flex h-5 w-5 items-center justify-center rounded-md border-2 text-[10px] font-bold",
+                "flex h-5 w-5 items-center justify-center rounded-md border text-[10px] font-bold shadow-subtle",
                 item.className,
               )}
             >
-              {item.glyph}
+              <StatusGlyph status={item.status} size={11} />
             </span>
             <span className="text-xs text-text-secondary">
-              {item.label} {item.glyph}
+              {item.label}
             </span>
           </div>
         ))}

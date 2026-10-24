@@ -196,21 +196,21 @@ export function HabitConsistencyCard({
           <div className="mt-4 flex flex-wrap items-center gap-4 border-b border-border/60 pb-3 text-xs">
             <span className="flex items-center gap-1.5 font-medium text-text">
               <Sparkles className="h-3.5 w-3.5 text-primary-text" />
-              <strong className="font-semibold text-text">
+              <strong className="font-mono font-semibold tabular-nums text-text">
                 {consistencyWindow.totalCheckins}
               </strong>{" "}
               habit completions
             </span>
             <span className="flex items-center gap-1.5 text-text-muted">
               <Flame className="h-3.5 w-3.5 text-warning" />
-              <strong className="font-semibold text-text">
+              <strong className="font-mono font-semibold tabular-nums text-text">
                 {consistencyWindow.activeDaysCount}
               </strong>{" "}
               active days
             </span>
             <span className="flex items-center gap-1.5 text-text-muted">
               <CheckCircle2 className="h-3.5 w-3.5 text-success" />
-              <strong className="font-semibold text-text">
+              <strong className="font-mono font-semibold tabular-nums text-text">
                 {consistencyWindow.avgDailyRate}%
               </strong>{" "}
               avg daily completion
@@ -309,7 +309,7 @@ export function HabitConsistencyCard({
             <div
               ref={tipRef}
               role="tooltip"
-              className="pointer-events-none fixed z-[70] w-max max-w-64 rounded-lg bg-tooltip px-3 py-2 text-left shadow-pop"
+              className="pointer-events-none fixed z-[70] w-max max-w-64 rounded-xl border border-white/10 bg-tooltip px-3 py-2 text-left shadow-pop [box-shadow:inset_0_1px_0_0_rgba(255,255,255,0.15)]"
               style={
                 pos
                   ? {

@@ -27,7 +27,7 @@ export function KpiCards({ kpis }: KpiCardsProps) {
       value: `${kpis.overallCompletion}%`,
       label: "Overall Completion",
       delta: kpis.completionVsLast ?? undefined,
-      caption: "vs last month",
+      caption: kpis.completionVsLast ? "vs last month" : "monthly completion rate",
     },
     {
       icon: Flame,
@@ -36,7 +36,7 @@ export function KpiCards({ kpis }: KpiCardsProps) {
       value: String(kpis.currentStreak),
       label: "Current Streak",
       delta: kpis.streakVsLast ?? undefined,
-      caption: "vs last month",
+      caption: kpis.streakVsLast ? "vs last month" : "active day streak",
     },
     {
       icon: Crown,
@@ -44,7 +44,7 @@ export function KpiCards({ kpis }: KpiCardsProps) {
       iconColor: "text-primary-text",
       value: String(kpis.longestStreak),
       label: "Longest Streak",
-      caption: "You've got this!",
+      caption: "all-time best run",
     },
     {
       icon: BarChart3,
@@ -52,7 +52,7 @@ export function KpiCards({ kpis }: KpiCardsProps) {
       iconColor: "text-primary-text",
       value: `${kpis.activeHabits}/${kpis.totalHabits}`,
       label: "Active Habits",
-      caption: "Keep going!",
+      caption: "habits in rotation",
     },
   ];
 

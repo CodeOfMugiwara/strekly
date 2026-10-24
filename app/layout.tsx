@@ -1,12 +1,17 @@
 import type { Metadata } from "next";
-import { Inter, Caveat } from "next/font/google";
+import { Caveat, Inter } from "next/font/google";
 import { ThemeProvider } from "@/components/layout/ThemeProvider";
 import { MotionProvider } from "@/components/layout/MotionProvider";
 import { Toaster } from "sonner";
 import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
-const caveat = Caveat({ subsets: ["latin"], variable: "--font-script" });
+const caveat = Caveat({
+  subsets: ["latin"],
+  variable: "--font-script",
+  weight: ["400", "500", "600", "700"],
+  display: "swap",
+});
 
 export const metadata: Metadata = {
   metadataBase: new URL(

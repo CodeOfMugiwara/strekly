@@ -44,12 +44,12 @@ function CustomTooltip({
   if (!active || !payload?.length) return null;
   const point = payload[0].payload;
   return (
-    <div className="rounded-lg border border-border bg-surface px-3 py-2 shadow-pop">
-      <p className="text-xs font-medium text-text">{point.dateLabel}</p>
-      <p className="mt-0.5 text-xs font-semibold text-primary-text">
+    <div className="rounded-xl border border-border/80 bg-surface/95 px-3 py-2 shadow-pop backdrop-blur-md [box-shadow:inset_0_1px_0_0_rgba(255,255,255,0.2)]">
+      <p className="text-xs font-semibold text-text">{point.dateLabel}</p>
+      <p className="mt-0.5 font-mono text-xs font-bold tabular-nums text-primary-text">
         {point.percent}%
       </p>
-      <p className="text-[11px] text-text-muted">
+      <p className="font-mono text-[11px] tabular-nums text-text-muted">
         {formatDone(point.done)}/{formatDone(point.total)}{" "}
         {granularity === "Daily" ? "habits" : "check-ins"}
       </p>

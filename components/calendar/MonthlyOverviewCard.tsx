@@ -7,7 +7,6 @@ import {
   OVERVIEW_TILE_COLORS,
   type MonthClassification,
 } from "@/lib/calendar";
-import { ScriptQuote } from "@/components/ui/ScriptQuote";
 
 const TILES = [
   { id: "great", label: "Great Days" },
@@ -94,10 +93,10 @@ export function MonthlyOverviewCard({
             />
           </svg>
           <div className="absolute inset-0 flex flex-col items-center justify-center">
-            <p className="text-lg font-bold leading-none text-text">
+            <p className="font-mono text-lg font-bold leading-none tabular-nums text-text">
               {classification.percent}%
             </p>
-            <p className="mt-1 text-[10px] text-text-muted">
+            <p className="mt-1 font-mono text-[10px] tabular-nums text-text-muted">
               {classification.strong} of {classification.elapsed} days
             </p>
           </div>
@@ -114,7 +113,7 @@ export function MonthlyOverviewCard({
                 }}
               />
               <div>
-                <p className="text-sm font-bold leading-tight text-text">
+                <p className="font-mono text-sm font-bold leading-tight tabular-nums text-text">
                   {counts[tile.id]}
                 </p>
                 <p className="text-[11px] text-text-muted">{tile.label}</p>
@@ -122,10 +121,6 @@ export function MonthlyOverviewCard({
             </li>
           ))}
         </ul>
-
-        <ScriptQuote size="sm" align="center" className="mt-5">
-          {"Not every day will be good,\nbut there is something good in every day. 💜"}
-        </ScriptQuote>
       </div>
     </Card>
   );

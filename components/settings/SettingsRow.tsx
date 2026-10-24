@@ -1,9 +1,8 @@
 import type { ReactNode } from "react";
 import { cn } from "@/lib/utils";
 
-/** Compact right-aligned select for settings rows (design chevron boxes). */
 export const settingsSelectClass =
-  "rounded-sm border border-border bg-surface px-2.5 py-1.5 text-xs text-text focus:outline-none focus:ring-2 focus:ring-primary/40";
+  "rounded-xl border border-border/80 bg-surface px-3 py-1.5 text-xs text-text shadow-subtle focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary/50";
 
 type SettingsRowProps = {
   icon?: ReactNode;

@@ -6,9 +6,11 @@ import { DayDetailsCard } from "@/components/calendar/DayDetailsCard";
 import { DayLegendCard } from "@/components/calendar/DayLegendCard";
 import { MonthCard } from "@/components/calendar/MonthCard";
 import { MonthlyOverviewCard } from "@/components/calendar/MonthlyOverviewCard";
-import { StatsDecorativeCard } from "@/components/stats/StatsDecorativeCard";
+import { CalendarTwilightScenicCard } from "@/components/ui/ScenicCards";
+import { ScriptQuote } from "@/components/ui/ScriptQuote";
 import { setHabitCompletion } from "@/actions/completions";
 import { deleteDayNote, saveDayNote } from "@/actions/notes";
+import { setDayMood } from "@/actions/moods";
 import {
   buildCellMap,
   buildStatusMap,
@@ -21,11 +23,10 @@ import {
 } from "@/lib/calendar";
 import { parseLocal } from "@/lib/stats";
 import type { HabitCompletion } from "@/types";
-import { ScriptQuote } from "@/components/ui/ScriptQuote";
 import { LumiMascot } from "@/components/mascot/LumiMascot";
 import type { SwapDirection } from "@/components/ui/MotionSwap";
 
-const DECORATIVE_QUOTE = "Consistency today creates\na brighter tomorrow. 💜";
+const DECORATIVE_QUOTE = "Consistency today builds lasting momentum.";
 
 type CalendarViewProps = {
   data: CalendarData;
@@ -46,13 +47,14 @@ export function CalendarView({ data }: CalendarViewProps) {
     data.completions,
   );
   const [notes, setNotes] = useState<Record<string, string>>(data.notes);
+  const [moodValues, setMoodValues] = useState<Record<string, number>>(data.moodValues);
   const pendingRef = useRef(new Set<string>());
 
   const statusMap = buildStatusMap(completions);
   const cellMap = buildCellMap(
     data.habits,
     statusMap,
-    data.moodValues,
+    moodValues,
     data.moodLevels,
     data.showMoodFaces,
   );
@@ -63,7 +65,7 @@ export function CalendarView({ data }: CalendarViewProps) {
     view.month,
     data.todayKey,
   );
-  const selectedMoodValue = data.moodValues[selectedKey];
+  const selectedMoodValue = moodValues[selectedKey];
 
   const goPrevMonth = () => {
     setDirection(-1);
@@ -137,6 +139,22 @@ export function CalendarView({ data }: CalendarViewProps) {
     return result.success;
   };
 
+  const handleSetMood = async (dateKey: string, value: number | null) => {
+    const prev = moodValues;
+    setMoodValues((m) => {
+      const next = { ...m };
+      if (value === null) delete next[dateKey];
+      else next[dateKey] = value;
+      return next;
+    });
+
+    const result = await setDayMood({ date: dateKey, moodValue: value });
+    if (!result.success) {
+      setMoodValues(prev);
+      toast.error("Could not save mood. Reverted.");
+    }
+  };
+
   return (
     <div className="space-y-5">
       <div className="flex flex-wrap items-end justify-between gap-4">
@@ -148,9 +166,14 @@ export function CalendarView({ data }: CalendarViewProps) {
             Look back, stay consistent. Every day counts.
           </p>
         </div>
-        <div className="flex items-center gap-4">
-          <ScriptQuote align="right">
-            {"A little progress\nevery day 💜"}
+        <div className="flex items-center gap-3">
+          <ScriptQuote
+            size="md"
+            slant
+            underline
+            className="hidden sm:inline-flex"
+          >
+            {"A little progress every day"}
           </ScriptQuote>
           <LumiMascot
             size="sm"
@@ -190,11 +213,12 @@ export function CalendarView({ data }: CalendarViewProps) {
             onNextDay={() => shiftSelected(1)}
             onSaveNote={saveNote}
             onDeleteNote={deleteNote}
+            onSetMood={handleSetMood}
           />
         </div>
         <div className="space-y-4">
           <DayLegendCard levels={data.moodLevels} />
-          <StatsDecorativeCard quote={DECORATIVE_QUOTE} />
+          <CalendarTwilightScenicCard />
           <MonthlyOverviewCard
             year={view.year}
             month={view.month}
@@ -202,6 +226,18 @@ export function CalendarView({ data }: CalendarViewProps) {
             onPrev={goPrevMonth}
             onNext={goNextMonth}
           />
+
+          {/* Standalone Inspiring Calendar Quote */}
+          <div className="flex flex-col items-center justify-center rounded-2xl border border-border/80 bg-surface/90 px-6 py-5 text-center shadow-card transition-all duration-200 hover:shadow-soft">
+            <ScriptQuote
+              size="base"
+              align="center"
+              underline
+              className="text-primary-text font-semibold max-w-sm"
+            >
+              {"Not every day will be good,\nbut there is something good in every day."}
+            </ScriptQuote>
+          </div>
         </div>
       </div>
     </div>

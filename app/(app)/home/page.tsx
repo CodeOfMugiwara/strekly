@@ -4,6 +4,7 @@ import { QuickStats } from "@/components/home/QuickStats";
 import { StatCards } from "@/components/home/StatCards";
 import { TodayHabits } from "@/components/home/TodayHabits";
 import { WeekStrip } from "@/components/home/WeekStrip";
+import { ReflectionCard } from "@/components/ui/ReflectionCard";
 import { loadHomeDashboard } from "@/lib/home-data";
 
 export const dynamic = "force-dynamic";
@@ -26,15 +27,18 @@ export default async function HomePage() {
       />
 
       <div className="grid gap-6 xl:grid-cols-3">
-        <TodayHabits
-          habits={data.habits}
-          weekDateKeys={data.weekDateKeys}
-          selectedDate={data.selectedDate}
-        />
+        <div className="xl:col-span-2">
+          <TodayHabits
+            habits={data.habits}
+            weekDateKeys={data.weekDateKeys}
+            selectedDate={data.selectedDate}
+          />
+        </div>
         <div className="space-y-6">
           <WeekStrip days={data.weekDays} />
           <InspirationCard />
           <QuickStats stats={data.quickStats} />
+          <ReflectionCard />
         </div>
       </div>
     </div>

@@ -42,8 +42,8 @@ export function PopoverPanel({
         aria-label={triggerLabel}
         data-tour={triggerTourId}
         className={cn(
-          "flex h-10 w-10 items-center justify-center rounded-full border border-border bg-surface text-text",
-          "transition-colors hover:bg-surface-hover",
+          "flex h-10 w-10 items-center justify-center rounded-full border border-border bg-surface text-text shadow-subtle",
+          "transition-all duration-140 ease-[cubic-bezier(0.23,1,0.32,1)] hover:bg-surface-hover active:scale-[0.95]",
           "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40",
           "data-[state=open]:border-primary data-[state=open]:bg-primary data-[state=open]:text-primary-on",
         )}
@@ -52,12 +52,13 @@ export function PopoverPanel({
       </RadixPopover.Trigger>
       <RadixPopover.Portal>
         <RadixPopover.Content
-          sideOffset={10}
+          sideOffset={8}
           align="end"
           collisionPadding={12}
           className={cn(
-            "modal-in z-[70] w-[22rem] max-w-[calc(100vw-1.5rem)] rounded-xl border border-border bg-surface shadow-pop",
-            "focus:outline-none",
+            "z-[70] w-[22rem] max-w-[calc(100vw-1.5rem)] rounded-2xl border border-border/80 bg-surface shadow-pop focus:outline-none",
+            "[box-shadow:var(--shadow-pop),_inset_0_1px_0_0_rgba(255,255,255,0.2)] dark:[box-shadow:var(--shadow-pop),_inset_0_1px_0_0_rgba(255,255,255,0.06)]",
+            "origin-[var(--radix-popover-content-transform-origin)] animate-in fade-in-0 zoom-in-95 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 duration-150 ease-[cubic-bezier(0.23,1,0.32,1)]",
           )}
         >
           <div className="flex items-start gap-3 border-b border-border px-4 py-3">

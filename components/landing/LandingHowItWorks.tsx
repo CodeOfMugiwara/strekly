@@ -7,18 +7,18 @@ import { Reveal } from "@/components/landing/Reveal";
 const STEPS = [
   {
     n: "01",
-    title: "Name the habit",
-    body: "Add the things you actually want to do. Categories, a planned time, a note — as much or as little detail as helps.",
+    title: "Define your daily rituals",
+    body: "Create habits you genuinely care about. Organize with custom categories, pick expressive emojis, and set weekly consistency targets.",
   },
   {
     n: "02",
-    title: "Tick it, or don't",
-    body: "Done, partial, missed. Partial is a real answer, and recording it is how the pattern shows up later.",
+    title: "Log with a single tap",
+    body: "Done (✓), partial (~), or missed (✗). Partial completion records honest effort and protects your momentum on hectic days.",
   },
   {
     n: "03",
-    title: "Read the pattern",
-    body: "Streaks, a consistency heatmap, and mood correlation. The app tells you which of your habits actually holds up.",
+    title: "Uncover your natural rhythm",
+    body: "GitHub-style consistency heatmaps, streak analysis, and mood correlations reveal exactly which habits lift your energy.",
   },
 ];
 

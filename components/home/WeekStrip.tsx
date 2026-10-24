@@ -35,7 +35,7 @@ export function WeekStrip({ days }: Props) {
                 ariaLabel={`${day.short}: ${day.percent}% completed`}
               />
               {day.isToday ? (
-                <span className="absolute inset-0 rounded-full ring-2 ring-primary/50 glow-primary" />
+                <span className="absolute -inset-0.5 rounded-full ring-2 ring-primary/60 ring-offset-1 ring-offset-surface shadow-subtle" />
               ) : null}
             </span>
             <span className="sr-only">{day.percent}% completed</span>

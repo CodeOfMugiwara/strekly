@@ -8,7 +8,9 @@ import { cn } from "@/lib/utils";
 
 const LINKS = [
   { href: "#results", label: "Results" },
+  { href: "#comparison", label: "Why Strekly" },
   { href: "#how-it-works", label: "How it works" },
+  { href: "#faq", label: "FAQ" },
 ];
 
 /**

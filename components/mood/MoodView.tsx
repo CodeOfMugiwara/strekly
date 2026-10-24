@@ -18,9 +18,9 @@ import {
   type MoodRangeData,
 } from "@/lib/mood-view";
 import { buildMoodInsightRows, computeMoodPattern } from "@/lib/insights";
-import { ScriptQuote } from "@/components/ui/ScriptQuote";
 import { MotionSwap, type SwapDirection } from "@/components/ui/MotionSwap";
 import { LumiMascot } from "@/components/mascot/LumiMascot";
+import { ScriptQuote } from "@/components/ui/ScriptQuote";
 
 export function MoodView({ initialData }: { initialData: MonthMoodData }) {
   const [data, setData] = useState<MonthMoodData>(initialData);
@@ -139,7 +139,7 @@ export function MoodView({ initialData }: { initialData: MonthMoodData }) {
     if (removing) {
       toast.info("Mood cleared for this day");
     } else {
-      toast.success("Mood logged! ✨", { duration: 1800 });
+      toast.success("Mood logged", { duration: 1800 });
     }
 
     startTransition(async () => {
@@ -192,9 +192,14 @@ export function MoodView({ initialData }: { initialData: MonthMoodData }) {
               Track your emotions. Notice patterns. Be kinder to yourself.
             </p>
           </div>
-          <div className="flex items-center gap-4">
-            <ScriptQuote>
-              {"A calmer mind\nA brighter tomorrow 💜"}
+          <div className="flex items-center gap-3">
+            <ScriptQuote
+              size="md"
+              slant
+              underline
+              className="hidden sm:inline-flex"
+            >
+              {"A calmer mind\nA brighter tomorrow"}
             </ScriptQuote>
             <LumiMascot
               size="sm"

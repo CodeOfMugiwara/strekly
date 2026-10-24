@@ -2,11 +2,14 @@
 
 import { Card } from "@/components/ui/Card";
 import { useEffect, useRef, useState } from "react";
-import { Check, ChevronLeft, ChevronRight, Minus, Pencil, X } from "lucide-react";
+import { ChevronLeft, ChevronRight, Pencil } from "lucide-react";
 import { MoodFace } from "@/components/ui/MoodFace";
+import { MoodFacePop } from "@/components/ui/MoodFacePop";
 import { HabitIcon } from "@/components/ui/HabitIcon";
 import { StatusPop } from "@/components/ui/StatusPop";
+import { StatusGlyph } from "@/components/ui/StatusGlyph";
 import { dayLabel } from "@/lib/calendar";
+import { cn } from "@/lib/utils";
 import type { CalendarHabit } from "@/lib/calendar";
 import type { HabitStatus } from "@/types";
 
@@ -23,6 +26,7 @@ type DayDetailsCardProps = {
   onNextDay: () => void;
   onSaveNote: (dateKey: string, content: string) => Promise<boolean>;
   onDeleteNote: (dateKey: string) => Promise<boolean>;
+  onSetMood?: (dateKey: string, value: number | null) => void;
 };
 
 function Checkbox({
@@ -30,29 +34,18 @@ function Checkbox({
 }: {
   status: HabitStatus | null;
 }) {
-  if (status === "done") {
-    return (
-      <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-md bg-success text-success-foreground">
-        <Check className="h-3.5 w-3.5" strokeWidth={3} />
-      </span>
-    );
-  }
-  if (status === "partial") {
-    return (
-      <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-md bg-warning text-warning-foreground">
-        <Minus className="h-3.5 w-3.5" strokeWidth={3} />
-      </span>
-    );
-  }
-  if (status === "missed") {
-    return (
-      <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-md bg-error text-error-foreground">
-        <X className="h-3 w-3" strokeWidth={3} />
-      </span>
-    );
-  }
   return (
-    <span className="h-5 w-5 shrink-0 rounded-md border border-border-strong bg-surface" />
+    <span
+      className={cn(
+        "flex h-5 w-5 shrink-0 items-center justify-center rounded-lg border text-[11px] font-bold shadow-xs transition-colors",
+        status === "done" && "border-transparent bg-success text-success-foreground [box-shadow:inset_0_1px_0_0_rgba(255,255,255,0.25)]",
+        status === "partial" && "border-transparent bg-warning text-warning-foreground [box-shadow:inset_0_1px_0_0_rgba(255,255,255,0.25)]",
+        status === "missed" && "border-transparent bg-error text-error-foreground [box-shadow:inset_0_1px_0_0_rgba(255,255,255,0.25)]",
+        !status && "border-border/80 bg-surface",
+      )}
+    >
+      <StatusGlyph status={status} size={12} />
+    </span>
   );
 }
 
@@ -69,6 +62,7 @@ export function DayDetailsCard({
   onNextDay,
   onSaveNote,
   onDeleteNote,
+  onSetMood,
 }: DayDetailsCardProps) {
   const mood = moodValue
     ? moodLevels.find((l) => l.value === moodValue)
@@ -167,21 +161,58 @@ export function DayDetailsCard({
       <div className="mt-4 grid gap-4 md:grid-cols-[minmax(0,2fr)_minmax(0,3fr)]">
         <div className="space-y-4">
           <div>
+            <div className="flex items-center justify-between">
+              <p className="text-xs font-medium text-text-muted">Mood</p>
+              {mood && onSetMood && (
+                <button
+                  type="button"
+                  onClick={() => onSetMood(dateKey, null)}
+                  className="text-[11px] text-text-muted hover:text-error transition-colors"
+                >
+                  Clear
+                </button>
+              )}
+            </div>
             {mood ? (
-              <div className="flex items-center gap-3">
-                <MoodFace value={mood.value} color={mood.color} size={44} />
+              <div className="mt-1 flex items-center gap-3">
+                <MoodFacePop value={mood.value} color={mood.color} size={40} />
                 <div>
-                  <p className="text-[11px] text-text-muted">Mood</p>
                   <p className="text-sm font-semibold text-text">
                     {mood.label}
                   </p>
+                  <p className="text-[11px] text-text-muted">Tap a face below to change</p>
                 </div>
               </div>
             ) : (
-              <>
-                <p className="text-xs font-medium text-text-muted">Mood</p>
-                <p className="mt-2 text-sm text-text-muted">No mood logged.</p>
-              </>
+              <p className="mt-1 text-xs text-text-muted">How did you feel this day?</p>
+            )}
+
+            {/* Direct 1-tap mood logging buttons */}
+            {onSetMood && (
+              <div className="mt-2.5 flex flex-wrap gap-1.5">
+                {moodLevels.map((level) => {
+                  const active = moodValue === level.value;
+                  return (
+                    <button
+                      key={level.value}
+                      type="button"
+                      aria-label={`Set mood: ${level.label}`}
+                      onClick={() => onSetMood(dateKey, active ? null : level.value)}
+                      title={level.label}
+                      className={cn(
+                        "flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs transition-all",
+                        "hover:scale-105 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40",
+                        active
+                          ? "border-primary bg-primary-lightest font-medium text-primary-text shadow-xs"
+                          : "border-border bg-surface text-text-secondary hover:border-primary/40 hover:bg-surface-hover",
+                      )}
+                    >
+                      <MoodFace value={level.value} color={level.color} size={18} />
+                      <span className="text-[11px]">{level.label}</span>
+                    </button>
+                  );
+                })}
+              </div>
             )}
           </div>
 

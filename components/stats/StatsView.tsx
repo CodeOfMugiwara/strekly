@@ -9,6 +9,7 @@ import { KpiCards } from "@/components/stats/KpiCards";
 import { StreakHistoryCard } from "@/components/stats/StreakHistoryCard";
 import { StatsDecorativeCard } from "@/components/stats/StatsDecorativeCard";
 import { LumiMascot } from "@/components/mascot/LumiMascot";
+import { ScriptQuote } from "@/components/ui/ScriptQuote";
 import { computeKeyInsights, insightRangeFor, type InsightPeriod } from "@/lib/insights";
 import {
   buildCompletionSeries,
@@ -20,7 +21,6 @@ import {
   type StatsData,
   type StatsGranularity,
 } from "@/lib/stats";
-import { ScriptQuote } from "@/components/ui/ScriptQuote";
 
 type StatsViewProps = {
   data: StatsData;
@@ -92,9 +92,14 @@ export function StatsView({ data }: StatsViewProps) {
             A closer look at your journey. Consistency creates change.
           </p>
         </div>
-        <div className="flex items-center gap-4">
-          <ScriptQuote>
-            {"Progress\nlooks good on you. 💜"}
+        <div className="flex items-center gap-3">
+          <ScriptQuote
+            size="md"
+            slant
+            underline
+            className="hidden sm:inline-flex"
+          >
+            {"Progress looks good on you."}
           </ScriptQuote>
           <LumiMascot
             size="sm"

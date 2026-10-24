@@ -1,7 +1,9 @@
 import { LandingHeader } from "@/components/landing/LandingHeader";
 import { LandingHero } from "@/components/landing/LandingHero";
 import { LandingResults } from "@/components/landing/LandingResults";
+import { LandingComparison } from "@/components/landing/LandingComparison";
 import { LandingHowItWorks } from "@/components/landing/LandingHowItWorks";
+import { LandingFaq } from "@/components/landing/LandingFaq";
 import { LandingCta } from "@/components/landing/LandingCta";
 import { LandingFooter } from "@/components/landing/LandingFooter";
 
@@ -18,7 +20,9 @@ export default function LandingPage() {
       <main>
         <LandingHero />
         <LandingResults />
+        <LandingComparison />
         <LandingHowItWorks />
+        <LandingFaq />
         <LandingCta />
       </main>
       <LandingFooter />

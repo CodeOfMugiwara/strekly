@@ -37,7 +37,7 @@ export function LandingHero() {
           <Reveal>
             <span className="inline-flex items-center gap-2 rounded-full border border-primary/25 bg-primary-lightest/70 px-3.5 py-1.5 text-xs font-medium text-primary-text">
               <Sparkles className="h-3.5 w-3.5" />
-              Habits, mood and streaks in one place
+              Habits, mood and streaks in one calm place
             </span>
           </Reveal>
 
@@ -63,10 +63,9 @@ export function LandingHero() {
 
           <Reveal delay={0.12}>
             <p className="mt-6 max-w-xl text-base leading-relaxed text-text-secondary sm:text-lg">
-              Track habits and mood together, spot the patterns that break
-              your streak, and make the next day easier than the last. No
-              guilt, no streaks to protect — just a clearer picture of what
-              actually works for you.
+              Track habits and mood together, spot what fuels your momentum, and
+              build streaks that endure. With partial credit for messy days and
+              zero shame, consistency becomes second nature.
             </p>
           </Reveal>
 
@@ -89,9 +88,13 @@ export function LandingHero() {
           </Reveal>
 
           <Reveal delay={0.24}>
-            <p className="mt-5 text-xs text-text-muted">
-              Free forever. No credit card. Your data stays yours.
-            </p>
+            <div className="mt-5 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-text-muted">
+              <span>Free forever</span>
+              <span>•</span>
+              <span>No credit card required</span>
+              <span>•</span>
+              <span>End-to-end private</span>
+            </div>
           </Reveal>
 
           <Reveal delay={0.3}>
@@ -100,7 +103,7 @@ export function LandingHero() {
                 mood="happy"
                 size="sm"
                 message="Small steps, every day. I'll keep count of the good ones."
-                caption="Lumi is your habit companion — tap me for a nudge."
+                caption="Lumi is your habit companion — tap for a nudge."
               />
             </div>
           </Reveal>

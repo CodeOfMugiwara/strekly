@@ -281,7 +281,7 @@ export function HabitFormModal({
             id="habit-category"
             value={categoryId}
             onChange={(e) => setCategoryId(e.target.value)}
-            className="w-full rounded-sm border border-border bg-surface px-3 py-2 text-sm text-text focus:outline-none focus:ring-2 focus:ring-primary/40"
+            className="w-full rounded-xl border border-border/80 bg-surface px-3.5 py-2 text-sm text-text shadow-subtle focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary/50"
           >
             <option value="">No category</option>
             {categories.map((c) => (
@@ -304,7 +304,7 @@ export function HabitFormModal({
             type="time"
             value={reminderTime}
             onChange={(e) => setReminderTime(e.target.value)}
-            className="w-full rounded-sm border border-border bg-surface px-3 py-2 text-sm text-text focus:outline-none focus:ring-2 focus:ring-primary/40"
+            className="w-full rounded-xl border border-border/80 bg-surface px-3.5 py-2 text-sm text-text shadow-subtle focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary/50"
           />
           <p className="mt-1 text-xs text-text-muted">
             A planned time of day for this habit. Display only — no notifications

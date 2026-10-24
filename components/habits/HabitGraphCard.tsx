@@ -58,16 +58,16 @@ function GraphTooltip({
   if (point.percent === null) return null;
   const color = getHabitDotColor(point.percent);
   return (
-    <div className="rounded-lg border border-border bg-surface px-3 py-2 shadow-pop">
+    <div className="rounded-xl border border-border/80 bg-surface/95 px-3 py-2 shadow-pop backdrop-blur-md [box-shadow:inset_0_1px_0_0_rgba(255,255,255,0.2)]">
       <p className="text-xs font-semibold text-text">{point.key}</p>
       <div className="mt-1 flex items-center gap-1.5">
         <span
           className="h-2.5 w-2.5 shrink-0 rounded-full"
           style={{ backgroundColor: color }}
         />
-        <p className="text-sm font-bold text-text">{point.percent}%</p>
+        <p className="font-mono text-sm font-bold tabular-nums text-text">{point.percent}%</p>
       </div>
-      <p className="mt-0.5 text-[11px] text-text-muted">
+      <p className="mt-0.5 font-mono text-[11px] tabular-nums text-text-muted">
         {point.done} done · {point.partial} partial of {point.total} habits
       </p>
     </div>

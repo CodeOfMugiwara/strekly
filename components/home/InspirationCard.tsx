@@ -1,17 +1,11 @@
-import { Card } from "@/components/ui/Card";
-import { ScriptQuote } from "@/components/ui/ScriptQuote";
-import { INSPIRATION_QUOTE } from "@/lib/quotes";
+import { HomeInspirationScenicCard } from "@/components/ui/ScenicCards";
 
+/**
+ * Home Inspiration Scenic Card
+ *
+ * Direct match to the horizontal misty hills & cypress trees banner in public/designs/HomePage.png.
+ * Features rolling mountain ridges, misty lavender sky, and frosted high-contrast quote.
+ */
 export function InspirationCard() {
-  return (
-    <Card className="relative min-h-[160px] overflow-hidden bg-surface-muted">
-      <ScriptQuote size="lg">{INSPIRATION_QUOTE}</ScriptQuote>
-      <div
-        aria-hidden
-        className="pointer-events-none absolute -bottom-3 -right-2 text-5xl opacity-30"
-      >
-        🏔️
-      </div>
-    </Card>
-  );
+  return <HomeInspirationScenicCard />;
 }

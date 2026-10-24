@@ -4,19 +4,29 @@ import { motion, useReducedMotion } from "motion/react";
 import { CalendarDays, Heart, LineChart, Sparkles } from "lucide-react";
 import { LumiMascot } from "@/components/mascot/LumiMascot";
 import { LandingHeatmap } from "@/components/landing/LandingHeatmap";
+import { StatusGlyph } from "@/components/ui/StatusGlyph";
 import { Reveal } from "@/components/landing/Reveal";
 import { cn } from "@/lib/utils";
+import type { HabitStatus } from "@/types";
 
 /**
  * Results — a bento grid of OUTCOMES.
  *
- * Every tile is what the user GETS, not what the app HAS. "Habit tracking"
- * is a feature; "see the week your streak died" is a result, and results
- * are what the research says converts. The layout itself signals priority:
- * the flagship result takes the large tile, supporting ones sit beside it.
+ * Every tile is what the user GETS: honest data, consistency heatmaps,
+ * mood correlations, and a quiet companion.
  */
 export function LandingResults() {
   const reduced = useReducedMotion();
+
+  const previewStatuses: HabitStatus[] = [
+    "done",
+    "done",
+    "partial",
+    "done",
+    "missed",
+    "done",
+    "done",
+  ];
 
   return (
     <section id="results" className="relative mx-auto max-w-6xl px-5 py-20 sm:px-8">
@@ -28,8 +38,8 @@ export function LandingResults() {
           See what is actually working
         </h2>
         <p className="mt-4 text-base leading-relaxed text-text-secondary">
-          Most habit apps show you a checkbox grid and call it progress. This
-          one shows you the pattern — and what to do about it.
+          Most habit apps show you an artificial gamified checklist. Strekly gives
+          you an honest picture of your consistency and well-being.
         </p>
       </Reveal>
 
@@ -45,12 +55,12 @@ export function LandingResults() {
               <LineChart className="h-4 w-4" />
             </div>
             <h3 className="mt-4 text-xl font-semibold text-text">
-              A year of your consistency, in one glance
+              A year of consistency, in one glance
             </h3>
             <p className="mt-2 text-sm leading-relaxed text-text-secondary">
-              Every day you tracked, laid out the way contribution graphs made
-              it obvious. See the run you are on — and the month that quietly
-              cost you the streak.
+              Every day you showed up, mapped out with GitHub-style contribution
+              clarity. Celebrate steady momentum and spot the quiet gaps before
+              they become habits.
             </p>
 
             <LandingHeatmap weeks={16} className="mt-6" />
@@ -68,11 +78,11 @@ export function LandingResults() {
               <Sparkles className="h-4 w-4" />
             </div>
             <h3 className="mt-4 text-base font-semibold text-text">
-              Know why a streak broke
+              Spot your natural rhythms
             </h3>
             <p className="mt-2 text-sm leading-relaxed text-text-secondary">
-              Correlate your mood with your check-ins. Lumi spots the days
-              you reliably fall off — and what precedes them.
+              Correlate daily energy with completed habits. Discover which routines
+              lift your spirits and when you need lighter targets.
             </p>
             <div className="mt-5 flex items-end gap-1.5" aria-hidden>
               {[38, 62, 30, 74, 45, 88, 52, 70, 34, 92, 58, 80].map(
@@ -106,27 +116,26 @@ export function LandingResults() {
               <Heart className="h-4 w-4" />
             </div>
             <h3 className="mt-4 text-base font-semibold text-text">
-              A missed day is data, not failure
+              Honest data over perfection
             </h3>
             <p className="mt-2 text-sm leading-relaxed text-text-secondary">
-              Partial counts as partial. Nothing turns red, nothing resets
-              your progress &mdash; you just learn what the week really looked
-              like.
+              Partial days acknowledge real effort without breaking stride. Missed
+              days are treated as feedback, not moral failure.
             </p>
             <div className="mt-5 flex gap-1.5" aria-hidden>
-              {["done", "done", "partial", "done", "missed", "done", "done"].map(
-                (s, i) => (
-                  <span
-                    key={i}
-                    className={cn(
-                      "h-7 flex-1 rounded-md",
-                      s === "done" && "bg-success",
-                      s === "partial" && "bg-warning",
-                      s === "missed" && "bg-error",
-                    )}
-                  />
-                ),
-              )}
+              {previewStatuses.map((s, i) => (
+                <div
+                  key={i}
+                  className={cn(
+                    "flex h-7 flex-1 items-center justify-center rounded-lg border text-xs font-bold shadow-xs",
+                    s === "done" && "border-transparent bg-success text-success-foreground",
+                    s === "partial" && "border-transparent bg-warning text-warning-foreground",
+                    s === "missed" && "border-transparent bg-error text-error-foreground",
+                  )}
+                >
+                  <StatusGlyph status={s} size={13} />
+                </div>
+              ))}
             </div>
           </motion.div>
         </Reveal>
@@ -145,8 +154,8 @@ export function LandingResults() {
               Habits, mood and notes in one view
             </h3>
             <p className="mt-2 text-sm leading-relaxed text-text-secondary">
-              Open the day and everything about it is right there. No
-              juggling three apps to answer &ldquo;how was I?&rdquo;
+              Open the day and see your habits, mood score, and reflection notes
+              side-by-side. No juggling disconnected tools.
             </p>
           </motion.div>
         </Reveal>
@@ -156,18 +165,18 @@ export function LandingResults() {
           <div className="flex h-full flex-col justify-between gap-6 rounded-2xl border border-primary/20 bg-primary-lightest/50 p-6 sm:flex-row sm:items-center">
             <div>
               <h3 className="text-lg font-semibold text-text">
-                A companion, not a chore
+                A companion, not a nag
               </h3>
               <p className="mt-2 max-w-md text-sm leading-relaxed text-text-secondary">
-                Lumi keeps the tone. No red streaks, no guilt, no nagging —
-                just a nudge when it is useful and quiet when it is not.
+                Lumi keeps the tone encouraging. No fake alarms, no guilt trips,
+                no pop-up spam — just calm support when you show up.
               </p>
             </div>
             <LumiMascot
               mood="supportive"
               size="md"
-              message="You showed up 5 days this week. That's the whole story."
-              caption="Tap Lumi for a nudge."
+              message="You showed up 5 days this week. That's real progress."
+              caption="Tap Lumi for an encouraging nudge."
             />
           </div>
         </Reveal>

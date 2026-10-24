@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, useState, useTransition } from "react";
-import { Check, Minus, Plus, X } from "lucide-react";
+import { Plus } from "lucide-react";
 import { useRouter } from "next/navigation";
 import confetti from "canvas-confetti";
 import { toast } from "sonner";
@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/Button";
 import { Card, CardHeader, CardTitle } from "@/components/ui/Card";
 import { HabitIcon } from "@/components/ui/HabitIcon";
 import { StatusPop } from "@/components/ui/StatusPop";
+import { StatusGlyph } from "@/components/ui/StatusGlyph";
 import { LumiMascot } from "@/components/mascot/LumiMascot";
 import type { HomeHabitRow } from "@/lib/home-data";
 import type { HabitStatus } from "@/types";
@@ -22,18 +23,11 @@ type Props = {
 };
 
 const circleClass: Record<HabitStatus | "unset", string> = {
-  done: "border-transparent bg-success text-success-foreground glow-success shadow-xs",
-  partial: "border-transparent bg-warning text-warning-foreground glow-warning shadow-xs",
-  missed: "border-transparent bg-error text-error-foreground shadow-xs",
-  unset: "border-border/80 bg-surface text-transparent hover:border-primary/60 hover:bg-surface-hover/80",
+  done: "border-transparent bg-success text-success-foreground shadow-subtle [box-shadow:inset_0_1px_0_0_rgba(255,255,255,0.25)]",
+  partial: "border-transparent bg-warning text-warning-foreground shadow-subtle [box-shadow:inset_0_1px_0_0_rgba(255,255,255,0.25)]",
+  missed: "border-transparent bg-error text-error-foreground shadow-subtle [box-shadow:inset_0_1px_0_0_rgba(255,255,255,0.25)]",
+  unset: "border-border/80 bg-surface text-transparent hover:border-primary/50 hover:bg-surface-hover/80",
 };
-
-function StatusGlyph({ status }: { status: HabitStatus | null }) {
-  if (status === "done") return <Check className="h-3.5 w-3.5 stroke-[3]" />;
-  if (status === "partial") return <Minus className="h-3.5 w-3.5 stroke-[3]" />;
-  if (status === "missed") return <X className="h-3 w-3 stroke-[3]" />;
-  return null;
-}
 
 function cycleStatus(current: HabitStatus | null): HabitStatus | null {
   const cycle: Array<HabitStatus | null> = ["done", "partial", "missed", null];
@@ -109,9 +103,9 @@ export function TodayHabits({ habits, weekDateKeys, selectedDate }: Props) {
         } catch {
           // Ignore in non-browser
         }
-        toast.success("All habits completed! Lumi is celebrating with you! 🎉");
+        toast.success("All habits completed today!");
       } else {
-        toast.success("Habit checked off! Keep the momentum! ✨", { duration: 1800 });
+        toast.success("Habit checked off.", { duration: 1500 });
       }
     }
 
@@ -150,14 +144,14 @@ export function TodayHabits({ habits, weekDateKeys, selectedDate }: Props) {
           <div className="max-w-xs">
             <h3 className="text-base font-semibold text-text">Your habit canvas is ready</h3>
             <p className="mt-1 text-xs text-text-muted">
-              Add your daily rituals and let Lumi keep you motivated each day.
+              Add your daily rituals and keep track of your consistency.
             </p>
           </div>
           <Button
             variant="primary"
             disabled={isPending}
             onClick={() => router.push("/habits")}
-            className="mt-1 glow-primary"
+            className="mt-1"
           >
             <Plus className="h-4 w-4" />
             Add First Habit
@@ -231,14 +225,15 @@ export function TodayHabits({ habits, weekDateKeys, selectedDate }: Props) {
                       aria-pressed={status === "done"}
                       onClick={() => handleClick(habit.id, i, dateKey, status)}
                       className={cn(
-                        "flex h-7 w-7 items-center justify-center rounded-full border-2 text-[11px] font-bold transition-[transform,background-color,border-color] duration-150 hover:scale-110 active:scale-95",
+                        "flex h-7 w-7 items-center justify-center rounded-lg border text-[11px] font-bold select-none",
+                        "transition-all duration-140 ease-[cubic-bezier(0.23,1,0.32,1)] hover:scale-105 active:scale-[0.92]",
                         "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40",
                         circleClass[status ?? "unset"],
-                        isToday && "ring-2 ring-primary/40",
+                        isToday && "ring-2 ring-primary/40 ring-offset-1 ring-offset-surface",
                       )}
                     >
                       <StatusPop status={status ?? "unset"}>
-                        <StatusGlyph status={status} />
+                        <StatusGlyph status={status} size={14} />
                       </StatusPop>
                     </button>
                   );

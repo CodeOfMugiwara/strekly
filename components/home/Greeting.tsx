@@ -1,12 +1,18 @@
-"use client";
-
 import { LumiMascot } from "@/components/mascot/LumiMascot";
+import { ScriptQuote } from "@/components/ui/ScriptQuote";
 
 function greetingForNow(): string {
   const hour = new Date().getHours();
   if (hour < 12) return "Good morning";
   if (hour < 18) return "Good day";
   return "Good evening";
+}
+
+function timeEmojiForNow(): string {
+  const hour = new Date().getHours();
+  if (hour < 12) return "🌤️";
+  if (hour < 18) return "☀️";
+  return "🌙";
 }
 
 type Props = {
@@ -18,24 +24,32 @@ type Props = {
 export function Greeting({ displayName, dayStreak = 0, progressPercent = 0 }: Props) {
   return (
     <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+      {/* Title & Subtitle */}
       <div>
-        <div className="mb-2 inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary-lightest/70 px-3 py-1 text-xs font-semibold text-primary-text backdrop-blur-sm">
-          <span>✨ Daily Journey</span>
-          {dayStreak > 0 && <span>· 🔥 {dayStreak} Day Streak</span>}
-        </div>
-        <h1 className="text-3xl font-extrabold tracking-tight text-text sm:text-4xl">
+        <h1 className="text-2xl font-bold tracking-tight text-text sm:text-3xl">
           {greetingForNow()},{" "}
-          <span className="bg-gradient-to-r from-primary via-purple-500 to-indigo-500 bg-clip-text text-transparent">
+          <span className="text-primary-text font-semibold">
             {displayName}
           </span>{" "}
-          <span aria-hidden>🌤️</span>
+          <span className="inline-block text-2xl">{timeEmojiForNow()}</span>
         </h1>
         <p className="mt-1 text-sm text-text-muted">
-          Your daily habits shape your future. One small step at a time.
+          A new day, a new opportunity to be better.
         </p>
       </div>
 
-      <div className="flex items-center self-end sm:self-auto">
+      {/* Script Quote & Lumi Mascot — Normal Size and Position */}
+      <div className="flex items-center gap-4 self-end sm:self-auto">
+        <ScriptQuote
+          size="md"
+          align="right"
+          slant
+          underline
+          className="text-primary-text font-bold hidden sm:inline-flex"
+        >
+          {"“Progress, not perfection.”"}
+        </ScriptQuote>
+
         <LumiMascot
           streakCount={dayStreak}
           progressPercent={progressPercent}
@@ -46,4 +60,3 @@ export function Greeting({ displayName, dayStreak = 0, progressPercent = 0 }: Pr
     </div>
   );
 }
-

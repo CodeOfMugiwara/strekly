@@ -34,13 +34,13 @@ export type LumiMascotProps = {
 };
 
 const ENCOURAGING_QUOTES = [
-  "Small steps lead to extraordinary habits! ✨",
-  "Consistency is your superpower today! 🚀",
-  "You're building momentum with every check-in! 💜",
-  "Proud of you for showing up today! 🌸",
-  "Drink some water, stretch, and conquer! 💧",
-  "Discipline today creates freedom tomorrow! 🌱",
-  "Every journey begins with a single deliberate step. 🌟",
+  "Small, honest efforts repeated daily beat occasional bursts of exhaustion.",
+  "Consistency is about returning to your rituals, not never missing a day.",
+  "Every check-in is a vote for the person you want to become.",
+  "Partial progress counts. Showing up matters more than perfection.",
+  "Take a breath, drink some water, and focus on your next single habit.",
+  "Momentum builds quietly before the results become obvious.",
+  "Resting when needed is part of sustainable consistency.",
 ];
 
 export function LumiMascot({
@@ -73,9 +73,7 @@ export function LumiMascot({
   }, [initialMood, progressPercent, streakCount]);
 
   // Trigger confetti when hitting 100% celebration.
-  // Only on the TRANSITION into 100% — previously this fired on mount, so
-  // every Home page load with a full day of habits showered confetti before
-  // the user had done anything.
+  // Only on the TRANSITION into 100%
   const prevProgressRef = useRef(progressPercent);
   useEffect(() => {
     const previous = prevProgressRef.current;
@@ -138,13 +136,26 @@ export function LumiMascot({
     lg: 112,
   }[size];
 
-  const currentQuote =
-    message ??
-    (progressPercent >= 100
-      ? `All habits done today! You're magnificent, ${displayName || "friend"}! 🎉`
-      : streakCount >= 5
-        ? `On fire with a ${streakCount}-day streak! Keep the flame alive! 🔥`
-        : ENCOURAGING_QUOTES[quoteIndex]);
+  const currentQuote = useMemo(() => {
+    if (message) return message;
+    if (progressPercent >= 100) {
+      return `All habits done today! Outstanding consistency, ${displayName || "friend"}.`;
+    }
+    if (streakCount >= 7) {
+      return `Solid momentum: ${streakCount}-day streak! Keep showing up.`;
+    }
+    if (progressPercent >= 50) {
+      return `Over halfway through today (${Math.round(progressPercent)}% completed).`;
+    }
+    if (progressPercent > 0) {
+      return `First check-in logged for today. Keep the rhythm going.`;
+    }
+    const hour = new Date().getHours();
+    if (hour >= 21) {
+      return "Evening wind-down. Reflect on today's small wins and rest well.";
+    }
+    return ENCOURAGING_QUOTES[quoteIndex];
+  }, [message, progressPercent, streakCount, displayName, quoteIndex]);
 
   return (
     <div className={cn("relative flex items-center gap-3 select-none", className)}>

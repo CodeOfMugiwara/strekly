@@ -1,8 +1,9 @@
 import { SettingsSection } from "@/components/settings/SettingsSection";
 import { LumiMascot } from "@/components/mascot/LumiMascot";
 import { TourButton } from "@/components/tour/TourButton";
+import { SettingsZenScenicCard } from "@/components/ui/ScenicCards";
 
-/** Identity block only — link rows and Danger Zone removed in the UI overhaul. */
+/** Identity block with distinct Settings Zen Scenic card */
 export function AboutCard() {
   return (
     <SettingsSection title="About" description="App information and support.">
@@ -26,6 +27,10 @@ export function AboutCard() {
           message="That is everything for today. Rest up."
           caption="Tap Lumi for a nudge."
         />
+      </div>
+
+      <div className="mt-6">
+        <SettingsZenScenicCard />
       </div>
     </SettingsSection>
   );

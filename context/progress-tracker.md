@@ -6,9 +6,13 @@ Update this file after every completed feature. Any AI agent reading this should
 
 ## Current Status
 
-**Phase:** 14.1 — Starter habits for every account + the product tour (Shipped)
-**Last completed:** (1) **The personal demo seed is gone.** Every new account used to be handed a copy of the developer's own September 2026 tracker — his habit names, his statuses and his first-person journal notes ("Finally fixed my sleep schedule."). That seed is deleted; the data files behind it (`lib/mock-habits.ts`, `lib/mock-home.ts` and the `mockProfile` block holding the name "Krishna") are gone from the bundle. (RLS and every query were already correctly scoped — this was never a leak, it was a seed.) (2) **A universal starter set** — 3 categories (Health / Mind / Evening) + 6 habits with no history, seeded at sign-up in the OAuth callback. (3) **The product tour** — a spotlight that walks the real app across Home, Habits, Mood, Calendar, Stats and Settings, opens the profile popover for the user so they can see the name field, and runs once per browser (replayable from Settings → About).
-**Next:** Signed-in browser QA of the tour against the real pages (the anchors are verified in code and the engine is verified on a preview route, but the real run needs an account) and of a brand-new account's starter habits. Then the Netlify auto-deploy connection, and the remaining product gap: the `@radix-ui/react-tooltip` dependency is still unused.
+**Phase:** 15.8 — Sidebar Quote Position Adjustment (Shipped)
+**Last completed:**
+1. **Shifted Sidebar Quote Right:**
+   - Moved the quote container in [Sidebar.tsx](file:///d:/habit-tracker-app/components/layout/Sidebar.tsx) from `left-3.5` (14px) to `left-10` (40px) with `max-w-[165px]`.
+   - The cursive text now cleanly clears the botanical leaves and stems on the left while staying in the exact same anchored position and size across all pages.
+2. **Production Build Clean:** Verified `npm run build` exits code 0 with all 12 routes intact.
+**Next:** Production deploy & signed-in user QA.
 
 
 
@@ -134,6 +138,15 @@ Update this file after every completed feature. Any AI agent reading this should
 - [x] **Anchors added** — `data-tour` on the habit list, the week strip, the habits grid, a habit name, Add Habit, the mood chips, the calendar grid, the heatmap, the profile trigger, the name field and the theme swatches. `PopoverPanel` gained `triggerTourId`.
 - [x] **`LumiMascot` gained `interactive={false}`** — decorative mode: no click, no speech bubble, out of the tab order. Lumi is the guide in the tour card.
 - [x] **Verified** — `npx tsc --noEmit` 0 · `npm run lint` 0 · `next build` clean. The engine was driven end to end with Playwright + Edge on a temporary `/preview-tour` route (route deleted afterwards): every placement lands in the viewport, the card never covers its target, the popover step opens the panel itself and the panel is closed again when the step is left or the tour ends. All 12 anchor ids verified present in the source.
+
+### Phase 15.0 — UI/UX Enhancement Audit & Reimplementation
+
+- [x] **Habits Category Filter Tabs** — Category filter pills (`All Habits` + user categories with active counts and color dots) above habits grid in `HabitsView.tsx`; wired `filteredHabits` to `HabitGridCard.tsx` with friendly empty state fallback.
+- [x] **Direct Calendar Mood Logging** — Interactive 1-tap mood chips with face icons, tooltips, active states, and a Clear button inside `DayDetailsCard.tsx` wired to `setDayMood` in `CalendarView.tsx`.
+- [x] **Home 1-Tap Daily Mood Check-in** — Compact `HomeMoodCard.tsx` mounted in `/home` dashboard; queries user's `mood_levels` and today's `mood_entries` with optimistic UI updates.
+- [x] **Repository Cleanup** — Removed accidental stray `command-palette/` root folder.
+- [x] **Audit & Preservation Verification** — Verified all previous features (multi-color habit graph dots matching mood graph, sticky habit name column, WeekStrip snappy check-ins, mobile nav/header, status token alignment) remain intact and fully operational.
+- [x] **Production Build Clean** — `next build` passes with code 0 across all 12 routes.
 
 ---
 

@@ -7,14 +7,170 @@
 
 ## Current Status
 
-**Phase:** 14.0 — Strekly launched on Netlify (Shipped)
-**Last completed:** The app is **live at https://strekly.netlify.app**. (1) **Renamed to Strekly** — wordmark, tagline ("Your streak, everyday."), metadata + openGraph, About card, export error copy, package name, README, and every `context/` doc. The mascot stays Lumi. (2) **Netlify deployment** — `netlify.toml` (Node 22, telemetry off, unpinned `@netlify/plugin-nextjs`), `.nvmrc`, the three `NEXT_PUBLIC_*` env vars set on the site (all scopes, production/preview/branch contexts), and the InsForge project's `allowed_redirect_urls` extended with the Netlify origin + its OAuth callback. (3) **The middleware had to move to the edge runtime** — Netlify's OpenNext adapter cannot package a Node-runtime `proxy.ts` on Next 16 (it copies only `middleware.js` into the edge function, not the runtime chunk it requires → `Cannot find module './webpack-runtime.js'` / `'./chunks/[turbopack]_runtime.js'`). This is upstream, still open: opennextjs-netlify#3562 and #3575. The legacy `middleware.ts` convention with `runtime: "experimental-edge"` emits a self-contained bundle and deploys cleanly. (4) **GitHub repo renamed** to `CodeOfMugiwara/strekly`.
-**Next:** Connect the repo to Netlify for auto-deploys (3 clicks in the Netlify UI — the API cannot link a repo without the Netlify GitHub App), then signed-in browser QA of the real pages and the sign-in → OAuth → app round-trip. Then the remaining product gaps: the `@radix-ui/react-tooltip` dependency is still unused.
-
+**Phase:** Strekly Sidebar Quote Position Adjustment — Complete
+**Last completed:**
+1. **Shifted Sidebar Quote Right for Separation from Flowers:**
+   - Moved the quote container in [Sidebar.tsx](file:///d:/habit-tracker-app/components/layout/Sidebar.tsx) to `left-[70px]` (70px) with `max-w-[160px]`.
+   - The cursive text now cleanly clears the botanical leaves and stems on the left while staying in the exact same anchored position and size across all pages.
+2. **Production Build Clean:** Verified `npm run build` exits code 0 across all 12 routes.
+**Next:** User visual inspection, QA, and signed-in testing.
 
 ---
 
 ## Session History
+
+### Phase 7.5 — Sidebar Quote Position Adjustment (Complete)
+
+**What was done:**
+- Shifted the sidebar quote container to `left-[70px]` (`max-w-[160px]`) in [Sidebar.tsx](file:///d:/habit-tracker-app/components/layout/Sidebar.tsx) so the cursive text completely clears the botanical leaves/stems on the left with generous breathing margin.
+- Verified that all dynamic quotes (`"Small Steps\nBrighter Days"`, `"Good Habits\nBrighter Days"`, `"A Calmer You\nBrighter Days"`, `"Small Steps\nBig Changes"`, `"Good Days\nBuild Great Lives"`, `"Better Habits\nHappier You"`) render cleanly with ample breathing room.
+- Verified Next.js 16 production build clean (`npm run build` code 0 across all 12 routes).
+
+---
+
+### Phase 7.4 — Botanical Lavender & Route-Dynamic Sidebar Quotes (Complete)
+
+**What was done:**
+- Re-architected botanical lavender in [ThemeBotanicalFlora.tsx](file:///d:/habit-tracker-app/components/ui/ThemeBotanicalFlora.tsx) to match the user's screenshot: 5 tiered curving stalks, angled oval lavender florets with translucent layering, foliage leaves, and grounding base wash strokes.
+- Configured dynamic route quotes in [Sidebar.tsx](file:///d:/habit-tracker-app/components/layout/Sidebar.tsx) across Home, Habits, Mood, Stats, Calendar, and Settings.
+- Anchored the cursive quote at the exact same position (`bottom-3.5 left-3.5`) and size (`size="sm"`) across all pages so navigation transitions are completely seamless without jumping or size shifts.
+- Added specular text drop-shadow so the cursive script remains crisp and ultra-legible across flower stems in both light and dark modes.
+- Verified Next.js 16 production build clean (`npm run build` code 0 across all 12 routes).
+
+---
+
+### Phase 7.3 — Quote Refinement (Slightly Smaller Cards & Untouched Headers/Sidebar) (Complete)
+
+**What was done:**
+- Added `size="base"` (`text-xl sm:text-2xl leading-snug`) in [ScriptQuote.tsx](file:///d:/habit-tracker-app/components/ui/ScriptQuote.tsx).
+- Tuned down the standalone inspiring quote below `MonthlyOverviewCard` in [CalendarView.tsx](file:///d:/habit-tracker-app/components/calendar/CalendarView.tsx) to `size="base"`, making it slightly smaller and more balanced.
+- Tuned down scenic card quotes in [ScenicCards.tsx](file:///d:/habit-tracker-app/components/ui/ScenicCards.tsx) and [ScenicLavenderCard.tsx](file:///d:/habit-tracker-app/components/ui/ScenicLavenderCard.tsx) to `size="base"`.
+- Strictly verified and preserved quotes on the side menu ([Sidebar.tsx](file:///d:/habit-tracker-app/components/layout/Sidebar.tsx)) and all 6 page headers ([Greeting.tsx](file:///d:/habit-tracker-app/components/home/Greeting.tsx), [HabitsView.tsx](file:///d:/habit-tracker-app/components/habits/HabitsView.tsx), [MoodView.tsx](file:///d:/habit-tracker-app/components/mood/MoodView.tsx), [StatsView.tsx](file:///d:/habit-tracker-app/components/stats/StatsView.tsx), [CalendarView.tsx](file:///d:/habit-tracker-app/components/calendar/CalendarView.tsx), [SettingsShell.tsx](file:///d:/habit-tracker-app/components/settings/SettingsShell.tsx)).
+- Verified production build clean (`npm run build` code 0 across all 12 routes).
+
+---
+
+### Phase 7.2 — Scaled Typography & Standalone Overview Quote (Complete)
+
+**What was done:**
+- Kept the side menu quote in [Sidebar.tsx](file:///d:/habit-tracker-app/components/layout/Sidebar.tsx) at normal size (`size="sm"`).
+- Scaled up typography in [ScriptQuote.tsx](file:///d:/habit-tracker-app/components/ui/ScriptQuote.tsx) (`sm`: 18-20px, `md`: 24-30px, `lg`: 30-36px, `xl`: 36-48px) and scaled the hand-drawn underline SVG.
+- Upgraded header quotes across Home, Habits, Mood, Stats, Calendar, and Settings to `size="md"`.
+- Upgraded all 5 scenic cards in [ScenicCards.tsx](file:///d:/habit-tracker-app/components/ui/ScenicCards.tsx) to `size="lg"`.
+- Upgraded [ReflectionCard.tsx](file:///d:/habit-tracker-app/components/ui/ReflectionCard.tsx) to `text-2xl sm:text-3xl`.
+- Removed quote from inside [MonthlyOverviewCard.tsx](file:///d:/habit-tracker-app/components/calendar/MonthlyOverviewCard.tsx) and rendered it separately below the card in [CalendarView.tsx](file:///d:/habit-tracker-app/components/calendar/CalendarView.tsx) at prominent `size="lg"`.
+- Verified production build clean (`npm run build` code 0 across all 12 routes).
+- Updated [SCRATCHPAD.md](file:///d:/habit-tracker-app/SCRATCHPAD.md).
+
+**Current state:**
+- Side menu quote normal, all other quotes bigger, and calendar quote standalone below overview.
+
+---
+
+### Phase 7.1 — Flower Bouquets & Natural Typography Restoration (Complete)
+
+**What was done:**
+- Restored `ScriptQuote.tsx` sizes back to normal (`md` default, `sm` for headers/cards).
+- Removed frosted box containers from all 5 scenic cards in [ScenicCards.tsx](file:///d:/habit-tracker-app/components/ui/ScenicCards.tsx), letting quotes sit directly on the atmospheric background with crisp drop-shadows.
+- Created full, lush 3-4 stem botanical bouquets in [ThemeBotanicalFlora.tsx](file:///d:/habit-tracker-app/components/ui/ThemeBotanicalFlora.tsx) for all 10 themes, drawn directly on the sidebar surface with no box.
+- Cleaned [Greeting.tsx](file:///d:/habit-tracker-app/components/home/Greeting.tsx): removed calendar and day-switching chevrons; restored `"Progress, not perfection."` quote at normal size beside Lumi.
+- Verified production build clean (`npm run build` code 0 across all 12 routes).
+- Updated [SCRATCHPAD.md](file:///d:/habit-tracker-app/SCRATCHPAD.md).
+
+**Current state:**
+- Quotes at normal sizes, no boxes on backgrounds, lush bouquets for all themes without boxes, and clean Home header.
+
+---
+
+### Phase 7 — Aesthetic Refinement, Botanical Floras & Visual Truth (Complete)
+
+**What was done:**
+- Completely removed global search (`CommandPalette`, search icons in `Sidebar.tsx` and `MobileHeader.tsx`).
+- Created [ThemeBotanicalFlora.tsx](file:///d:/habit-tracker-app/components/ui/ThemeBotanicalFlora.tsx) with custom SVG botanicals for all 10 themes. Rendered directly on the sidebar surface without a box or card border, with generous spacing to avoid colliding with quotes.
+- Reduced all quote sizes (`xs`/`sm`), specifically tuning [MonthlyOverviewCard.tsx](file:///d:/habit-tracker-app/components/calendar/MonthlyOverviewCard.tsx) and [ReflectionCard.tsx](file:///d:/habit-tracker-app/components/ui/ReflectionCard.tsx).
+- Removed all hearts (`💜`) from quotes across every page header and component.
+- Implemented 5 distinct scenic cards in [ScenicCards.tsx](file:///d:/habit-tracker-app/components/ui/ScenicCards.tsx) for Home, Mood, Stats, Calendar, and Settings with high-contrast frosted scrims.
+- Removed daily mood card from Home dashboard (`app/(app)/home/page.tsx`), reserving mood check-in exclusively to `/mood`.
+- Removed artificial "Daily Dashboard · 5 Day Streak" pill from `Greeting.tsx` to match `HomePage.png`.
+- Verified production build clean (`npm run build` code 0 across all 12 routes).
+- Updated [SCRATCHPAD.md](file:///d:/habit-tracker-app/SCRATCHPAD.md).
+
+**Current state:**
+- Visual polish and user specifications 100% fulfilled and verified against designs.
+
+---
+
+### Phase 6 — Design Fidelity & Signature Lavender Sky Aesthetics (Complete)
+
+**What was done:**
+- Analyzed all design assets under `public/designs/` (`HomePage.png`, `MoodPage.png`, `StatsPage.png`, `CalenderPage.png`, `SettingsPage.png`, and `trakcer UI.png`).
+- Re-introduced the signature Google Font `Caveat` (`--font-script`) across the app shell and design system tokens.
+- Built [BotanicalLavender.tsx](file:///d:/habit-tracker-app/components/ui/BotanicalLavender.tsx) rendering crisp vector botanical lavender stems and florets.
+- Upgraded [Sidebar.tsx](file:///d:/habit-tracker-app/components/layout/Sidebar.tsx) footer with botanical lavender corner art and angled handwritten cursive script quotes rotating dynamically per page.
+- Upgraded [ScriptQuote.tsx](file:///d:/habit-tracker-app/components/ui/ScriptQuote.tsx) with authentic slant, hand-drawn vector underline, and heart accents.
+- Created [ScenicLavenderCard.tsx](file:///d:/habit-tracker-app/components/ui/ScenicLavenderCard.tsx) rendering vector rolling hills, glowing sun, and cursive quotes, deployed across Home, Stats, Mood, Calendar, and Settings.
+- Created [ReflectionCard.tsx](file:///d:/habit-tracker-app/components/ui/ReflectionCard.tsx) with quotation mark, Caveat cursive, and botanical lavender sprig matching `HomePage.png`.
+- Restored top-right header script accents across Home, Habits, Mood, Stats, Calendar, Settings, and Landing Footer.
+- Verified production build clean (`npm run build` code 0 across all 12 routes).
+- Updated [SCRATCHPAD.md](file:///d:/habit-tracker-app/SCRATCHPAD.md).
+
+**Current state:**
+- Full design fidelity restored matching `public/designs/*.png`.
+
+---
+
+### Modernization Phase 5 — Intelligent Context & Keyboard UX (Complete)
+
+**What was done:**
+- Elevated [LumiMascot.tsx](file:///d:/habit-tracker-app/components/mascot/LumiMascot.tsx) with calm, grounded mindfulness reflections and contextual progress-aware guidance based on completion rate, streak, and time of day. Removed artificial sparkles and cheesy emoji slogans.
+- Created [CommandPalette.tsx](file:///d:/habit-tracker-app/components/ui/CommandPalette.tsx) with `Cmd+K` / `Ctrl+K` shortcut, keyboard navigation, full view jumps, and instant actions (theme toggle, export, new habit, product tour).
+- Mounted [CommandPalette](file:///d:/habit-tracker-app/components/ui/CommandPalette.tsx) into [app/(app)/layout.tsx](file:///d:/habit-tracker-app/app/(app)/layout.tsx).
+- Added quick search trigger buttons to [Sidebar.tsx](file:///d:/habit-tracker-app/components/layout/Sidebar.tsx) and [MobileHeader.tsx](file:///d:/habit-tracker-app/components/layout/MobileHeader.tsx).
+- Verified production build clean (`npm run build` code 0 across all 12 routes).
+- Updated [SCRATCHPAD.md](file:///d:/habit-tracker-app/SCRATCHPAD.md).
+
+**Current state:**
+- All 5 phases of the Modernization & Anti-AI-Slop overhaul are completed and verified.
+
+---
+
+### Modernization Phase 4 — Dashboard & Core App Screens Refresh (Complete)
+
+**What was done:**
+- Refined [Sidebar.tsx](file:///d:/habit-tracker-app/components/layout/Sidebar.tsx): upgraded nav links to concentric `rounded-xl` with tactile scale feedback (`active:scale-[0.98]`) and specular highlights; replaced the cheesy script quote card with a clean status and Postgres RLS vault indicator.
+- Polished Home Dashboard: removed lingering `glow-primary` AI-slop ring in [WeekStrip.tsx](file:///d:/habit-tracker-app/components/home/WeekStrip.tsx); transformed [InspirationCard.tsx](file:///d:/habit-tracker-app/components/home/InspirationCard.tsx) into a clean Daily Mindset intention card; enforced tabular numbers on all streaks and completion counts.
+- Elevated Habits Month Grid: added sticky divider border (`border-r border-border/40`) to [HabitGridCard.tsx](file:///d:/habit-tracker-app/components/habits/HabitGridCard.tsx) sticky columns; upgraded category filter pills in [HabitsView.tsx](file:///d:/habit-tracker-app/components/habits/HabitsView.tsx) with tactile press and font-mono count pills.
+- Eradicated cheesy script quotes and sparkles across all core application screens ([StatsView.tsx](file:///d:/habit-tracker-app/components/stats/StatsView.tsx), [MoodView.tsx](file:///d:/habit-tracker-app/components/mood/MoodView.tsx), [CalendarView.tsx](file:///d:/habit-tracker-app/components/calendar/CalendarView.tsx), [SettingsShell.tsx](file:///d:/habit-tracker-app/components/settings/SettingsShell.tsx), [MonthlyOverviewCard.tsx](file:///d:/habit-tracker-app/components/calendar/MonthlyOverviewCard.tsx), [MoodSidebar.tsx](file:///d:/habit-tracker-app/components/mood/MoodSidebar.tsx), [StatsDecorativeCard.tsx](file:///d:/habit-tracker-app/components/stats/StatsDecorativeCard.tsx), [DayDetailsCard.tsx](file:///d:/habit-tracker-app/components/calendar/DayDetailsCard.tsx)), replacing them with clean status badges and reflection prompts.
+- Upgraded chart tooltips across [CompletionOverviewCard.tsx](file:///d:/habit-tracker-app/components/stats/CompletionOverviewCard.tsx), [MoodGraphCard.tsx](file:///d:/habit-tracker-app/components/mood/MoodGraphCard.tsx), and [HabitGraphCard.tsx](file:///d:/habit-tracker-app/components/habits/HabitGraphCard.tsx) with concentric `rounded-xl`, backdrop blur, specular inner highlights, and tabular numbers.
+- Upgraded [DayDetailsCard.tsx](file:///d:/habit-tracker-app/components/calendar/DayDetailsCard.tsx) habit checkbox to use [StatusGlyph.tsx](file:///d:/habit-tracker-app/components/ui/StatusGlyph.tsx).
+- Verified production build clean (`npm run build` code 0 across all 12 routes).
+- Updated [SCRATCHPAD.md](file:///d:/habit-tracker-app/SCRATCHPAD.md).
+
+**Current state:**
+- Phase 4 complete.
+- Ready for Phase 5 (Intelligent Context & Keyboard UX).
+
+---
+
+### Modernization Phase 3 — Landing Page Rewrite & Conversion Rework (Complete)
+
+**What was done:**
+- Converted [LandingHabitGrid.tsx](file:///d:/habit-tracker-app/components/landing/LandingHabitGrid.tsx) into an interactive live product demonstration with clickable cells that cycle status (`unset` -> `done` -> `partial` -> `missed` -> `unset`), integrating [StatusGlyph.tsx](file:///d:/habit-tracker-app/components/ui/StatusGlyph.tsx) and `animate-status-pop`.
+- Rewrote [LandingHero.tsx](file:///d:/habit-tracker-app/components/landing/LandingHero.tsx) copy to eliminate contradiction between app name ("Strekly") and the previous "no streaks to protect" text; reframed to building streaks that endure with forgiving partial credit.
+- Built [LandingComparison.tsx](file:///d:/habit-tracker-app/components/landing/LandingComparison.tsx) bento table contrasting bloated gamified trackers and rigid spreadsheets with Strekly's calm, partial-credit philosophy.
+- Fixed inaccurate marketing claims in [LandingResults.tsx](file:///d:/habit-tracker-app/components/landing/LandingResults.tsx) ("nothing turns red") and replaced with honest data philosophy and real `StatusGlyph` component previews.
+- Rewrote [LandingHowItWorks.tsx](file:///d:/habit-tracker-app/components/landing/LandingHowItWorks.tsx) steps to match real app features (categories, frequency targets, emojis).
+- Created [LandingFaq.tsx](file:///d:/habit-tracker-app/components/landing/LandingFaq.tsx) with smooth animated accordion answering top 6 user objections (pricing, partial credit, Postgres RLS, JSON export, PWA, Lumi).
+- Overhauled [LandingFooter.tsx](file:///d:/habit-tracker-app/components/landing/LandingFooter.tsx) removing cheesy script quote and adding clean multi-column links and security badges.
+- Mounted new sections in [page.tsx](file:///d:/habit-tracker-app/app/(marketing)/page.tsx) and updated navigation links in [LandingHeader.tsx](file:///d:/habit-tracker-app/components/landing/LandingHeader.tsx).
+- Verified `npm run build` (zero errors, code 0).
+- Updated [SCRATCHPAD.md](file:///d:/habit-tracker-app/SCRATCHPAD.md).
+
+**Current state:**
+- Phase 3 complete.
+- Ready for Phase 4 (Dashboard & Core App Screens Refresh).
+
+---
 
 ### Phase 2 Session Close (Complete)
 
@@ -2403,3 +2559,145 @@ removed; all interactive switches share the Settings motion language.
   also verified locally before the production-only failure surfaced).
 - Unchanged carry-forwards: development reminders, OAuth e2e QA, login
   `?redirect=`, touch heat tooltip.
+
+---
+
+### Phase 15.0 — UI/UX Enhancement Audit & Reimplementation (Complete)
+
+**Context:** Following a git pull of a previous version, an audit was performed across the entire codebase to restore and re-implement missing UI/UX enhancements and synchronize context documentation.
+
+**What was built & verified:**
+- **Category Filter Tabs on Habits (`/habits`):**
+  - Added category filter pills (`All Habits` + each user category with live counts & color dots) above the habits grid.
+  - Wired `filteredHabits` into `HabitGridCard` with an empty state fallback ("No habits found in this category.").
+- **Direct Mood Logging on Calendar (`/calendar`):**
+  - Wired `moodValues` state and `handleSetMood` optimistic mutations in `CalendarView.tsx`.
+  - Added 1-tap mood chips with face icons, tooltips, active states, and a Clear button directly inside `DayDetailsCard.tsx`.
+- **1-Tap Mood Check-in on Home (`/home`):**
+  - Extended `loadHomeDashboard` in `lib/home-data.ts` to query user's `mood_levels` and today's `mood_entries`.
+  - Built `components/home/HomeMoodCard.tsx` featuring 1-tap mood selection, active state badges, and optimistic `setDayMood` mutation.
+  - Mounted `HomeMoodCard` in the Home dashboard sidebar column.
+- **Repository Cleanup:**
+  - Removed stray root-level `command-palette/` directory (preserving canonical `components/command-palette/`).
+- **Verified Preserved Features:**
+  - Habit Graph dots (`r=5`, `activeDot r=7`, multi-color palette matching Mood Graph).
+  - Sticky habit name column in `HabitGridCard`.
+  - Checkbox status colors (`bg-success`, `bg-warning`, `bg-error`) in `DayDetailsCard`.
+  - Mobile bottom navigation & header.
+
+**Verification:**
+- `npm run build` executed and passed cleanly with Turbopack and TypeScript checks (code 0).
+- All 12 application routes verified.
+
+---
+
+### Phase 15.1 — UI/UX Redesign Plan Execution & Command Palette (Complete)
+
+**What was built & verified:**
+- **Command Palette (`CommandPaletteModal.tsx` & `CommandPaletteProvider.tsx`):**
+  - Integrated `Cmd+K` / `Ctrl+K` global keyboard listener.
+  - Implemented Radix Dialog modal with backdrop blur, smooth spring entrance, and fuzzy search matching against `COMMAND_ITEMS`.
+  - Grouped navigation links and quick actions (Add Habit, Log Mood, View Calendar).
+  - Added desktop search trigger to `Sidebar.tsx` and mobile search button to `MobileHeader.tsx`.
+- **Radix Tooltip System (`components/ui/Tooltip.tsx`):**
+  - Built reusable, accessible tooltips leveraging `@radix-ui/react-tooltip`.
+  - Mounted `TooltipProvider` at the root application shell.
+- **Verification:**
+  - `npm run build` ran and completed with code 0 (12 static/dynamic routes compiled cleanly).
+
+---
+
+### Phase 15.2 — UI Polish: Search Option Removed & App Shell Streamlined (Complete)
+
+**What was done:**
+- Removed the search button from [Sidebar.tsx](file:///d:/habit-tracker-app/components/layout/Sidebar.tsx).
+- Removed the search button from [MobileHeader.tsx](file:///d:/habit-tracker-app/components/layout/MobileHeader.tsx).
+- Removed `CommandPaletteProvider` from [app/(app)/layout.tsx](file:///d:/habit-tracker-app/app/(app)/layout.tsx) and deleted `components/command-palette/`.
+- Verified sidebar navigation strictly matches design and previous specifications.
+- Verified `npm run build` completes with code 0 across all 12 routes.
+
+---
+
+### Phase 1 Modernization — Foundation & Design System Elevation (Complete)
+
+**What was built & modernized:**
+- **Purged AI-Slop Tokens & Typography:**
+  - Retired Caveat cursive font (`--font-script`) from `app/layout.tsx` and app headers, sidebars, and cards. Aliased `--font-script` to `var(--font-sans)` for safe backwards compatibility.
+  - Replaced cheesy cursive quotes with modern, subdued typographic badges with subtle border, tabular/mono accents, and clean alignment (`components/ui/ScriptQuote.tsx`).
+  - Cleaned up `Greeting.tsx`: replaced AI-slop gradient text and sparkles with crisp, high-contrast typography and subtle badge indicator.
+  - Added modern typography hierarchy rules: headings `text-wrap: balance` and `.tabular-nums` for numeric indicators.
+- **Specular Linear/Apple Shadows:**
+  - Replaced muddy diffuse drop shadows in `app/globals.css` with dual-layer Apple/Linear-style specular shadows:
+    - `--shadow-subtle: 0 1px 2px 0 rgba(0, 0, 0, 0.05);`
+    - `--shadow-card: 0 1px 3px 0 rgba(0, 0, 0, 0.04), 0 4px 12px 0 rgba(0, 0, 0, 0.03);`
+    - `--shadow-soft: 0 2px 6px 0 rgba(0, 0, 0, 0.04), 0 8px 20px -2px rgba(0, 0, 0, 0.05);`
+    - `--shadow-pop: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 12px 24px -4px rgba(0, 0, 0, 0.08);`
+    - Mode-scoped dark specular shadows with crisp contrast.
+- **Concentric Border Radii:**
+  - Standardized concentric hierarchy ($R_{\text{outer}} = R_{\text{inner}} + \text{padding}$): Cards = `rounded-2xl` (18px), Buttons = `rounded-xl` (12px), Inputs = `rounded-xl` (12px), Tags/badges/status cells = `rounded-lg` (8px), Small elements = `rounded-md` (6px) / `rounded-sm` (4px).
+  - Updated radius tokens in `app/globals.css`.
+- **Refined Color Themes & Surfaces:**
+  - Desaturated light mode ambient background (`--color-background: #fcfbfe`).
+  - Introduced sleek, high-contrast modern dark mode palette (`#0f0e17` background, `#171622` surface, `#29273c` border, `#f3f4f6` text) eliminating muddy purple hazing.
+  - Neutralized noisy neon glow box shadows (`.glow-primary`, `.glow-warning`, etc.) into crisp 1px specular inner highlights.
+  - Modernized `AuroraBackdrop.tsx`: replaced chaotic multi-color drifting blurry blobs with a clean, subtle top-edge radial vignette and whisper-light micro-grid.
+  - Disabled perpetual fatigue-inducing infinite loop animations (`.animate-float`, `.animate-pulse-glow` set to motionless at rest).
+- **Component Primitives Upgraded:**
+  - `Button.tsx`: updated with concentric radii, tactile press physics (`active:scale-[0.97]`), Kowalski spring easing (`cubic-bezier(0.23, 1, 0.32, 1)`), and specular highlights.
+  - `Card.tsx`: updated with top-edge specular highlight (`inset 0 1px 0 0 rgba(255, 255, 255, 0.2)` in light / `0.06` in dark) and tactile interactive transitions.
+  - `Input.tsx` & `Textarea`: updated to concentric `rounded-xl` with subtle shadow and refined focus rings.
+  - `StatCards.tsx`: added `tabular-nums` to count-ups and counters to prevent numeric jitter; removed cheesy sparkle emojis.
+  - `StatsDecorativeCard.tsx`: purged mountain/cloud emojis and harsh pastel gradients; replaced with sleek focus card and clean typography.
+  - `Sidebar.tsx`: updated footer quote block to a clean, centered status badge.
+- **Scratchpad:**
+  - Created `scratchpad.md` at workspace root and opened in editor, actively tracking the 5 phases of the modernization plan.
+- **Verification:**
+  - Production build clean (`npm run build` completed with code 0 across all 12 routes).
+
+**Decisions made:**
+- Desaturate base backgrounds and elevate contrast to give Strekly a high-craft Linear/Apple SaaS feel rather than a 2021 web3 pastel template.
+- Concentric radius tokens ensure nested elements ($R_{\text{outer}} = R_{\text{inner}} + \text{padding}$) look mathematically harmonious across all viewports.
+- Replace cursive Caveat accents with sleek monospace/sans badges (`ScriptQuote`), preserving layout balance while eliminating the greeting-card aesthetic.
+- Neutralize infinite loop floating animations to reduce cognitive fatigue and CPU/battery consumption.
+
+**Current state:** Phase 1 Foundation & Design System Elevation complete and verified. Production build passes cleanly with code 0.
+
+**Next:** Phase 2 Modernization — Component Polish & Tactile Motion (Habit check-in cell spring morph, tactile scale bounce, origin-aware popovers).
+
+---
+
+### Phase 2 Modernization — Component Polish & Tactile Motion (Complete)
+
+**What was built & modernized:**
+- **Silky Spring Status Morph (`StatusGlyph.tsx`):**
+  - Created reusable `components/ui/StatusGlyph.tsx` leveraging `motion/react` with path morphs between `done` checkmark, `partial` dash, and `missed` X.
+  - Follows Emil Kowalski animation gate: enters from `scale(0.85)` with opacity (never from 0), 140–160ms duration with `--ease-out` (`cubic-bezier(0.23, 1, 0.32, 1)`).
+  - Integrated into both `TodayHabits.tsx` (Home dashboard) and `HabitGridCard.tsx` (Month grid and Legend).
+- **Tactile Check-in Feedback (`status-pop`):**
+  - Upgraded `@keyframes status-pop` in `app/globals.css` to an authentic haptic-like scale bounce (`scale: [0.95, 1.15, 0.98, 1]` in 220ms).
+  - Added physical press feedback to check-in buttons: `active:scale-[0.92]`, 140ms Kowalski cubic-bezier transition, and concentric `rounded-lg` (8px) geometry.
+  - Replaced noisy `.glow-success` and `.glow-warning` halos on check-in cells with crisp specular highlights (`inset 0 1px 0 0 rgba(255, 255, 255, 0.25)`).
+- **Origin-Aware Popovers & Modals:**
+  - `components/ui/Popover.tsx`: Added `origin-[var(--radix-popover-content-transform-origin)]` so header popovers expand outward directly from the trigger icon rather than screen center. Added `rounded-2xl` concentric radius, specular highlight, and circular trigger `active:scale-[0.95]`.
+  - `components/ui/Modal.tsx`: Updated entrance animation to enter from `scale(0.96)` with spring stiffness 380, damping 30, `rounded-2xl` concentric radius, and specular highlight.
+  - `components/ui/Tooltip.tsx`: Bound transform origin to `var(--radix-tooltip-content-transform-origin)` with 140ms duration for instant, non-jarring hover feedback.
+  - `components/ui/Dropdown.tsx`: Added tactile button press (`active:scale-[0.97]`), concentric `rounded-xl`, and origin-aware menu transitions (`menu-in` / `menu-in-right`).
+- **Concentric Radius Consistency:**
+  - Standardized select dropdowns and inputs in `HabitFormModal.tsx` and `SettingsRow.tsx` from `rounded-sm` (2px) to concentric `rounded-xl` (12px) with `shadow-subtle`.
+- **Scratchpad Updated:**
+  - Updated `scratchpad.md` tracking Phase 2 as complete.
+- **Verification:**
+  - Production build clean (`npm run build` completed with code 0 across all 12 routes).
+
+**Decisions made:**
+- Status glyphs morph dynamically using SVG path length and spring transitions without layout thrashing.
+- Check-in buttons scale down on press (`active:scale-[0.92]`) and bounce on state change (`scale: [0.95, 1.15, 0.98, 1]`) providing rich physical tactile feedback.
+- Popovers and tooltips originate strictly from trigger bounds (`var(--radix-*-content-transform-origin)`), eliminating unnatural center-screen scaling.
+
+**Current state:** Phase 2 Component Polish & Tactile Motion complete and verified. Production build clean with code 0.
+
+**Next:** Phase 3 Modernization — Landing Page Rewrite & Conversion Rework (Eliminate copy contradictions, interactive live preview in hero, problem->solution comparison, interactive Bento grid, FAQ accordion).
+
+
+
+

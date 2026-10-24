@@ -54,15 +54,16 @@ export function Dropdown<T extends string = string>({
         aria-expanded={open}
         onClick={() => setOpen((v) => !v)}
         className={cn(
-          "inline-flex items-center gap-1.5 rounded-sm border border-border bg-surface px-3 py-1.5 text-xs font-medium text-text",
-          "hover:bg-surface-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40",
+          "inline-flex items-center gap-1.5 rounded-xl border border-border/80 bg-surface px-3 py-1.5 text-xs font-medium text-text shadow-subtle select-none",
+          "transition-all duration-140 ease-[cubic-bezier(0.23,1,0.32,1)] hover:bg-surface-hover active:scale-[0.97]",
+          "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40",
           triggerClassName,
         )}
       >
         {triggerLabel ? triggerLabel(value) : (selected?.label ?? value)}
         <ChevronDown
           className={cn(
-            "h-3.5 w-3.5 text-text-muted transition-transform",
+            "h-3.5 w-3.5 text-text-muted transition-transform duration-140",
             open && "rotate-180",
           )}
         />
@@ -70,8 +71,9 @@ export function Dropdown<T extends string = string>({
       {open && (
         <div
           className={cn(
-            "menu-in absolute z-50 mt-1 min-w-36 overflow-hidden rounded-lg border border-border bg-surface py-1 shadow-pop",
-            align === "right" ? "right-0" : "left-0",
+            "absolute z-50 mt-1 min-w-36 overflow-hidden rounded-xl border border-border/80 bg-surface py-1 shadow-pop",
+            "[box-shadow:var(--shadow-pop),_inset_0_1px_0_0_rgba(255,255,255,0.2)] dark:[box-shadow:var(--shadow-pop),_inset_0_1px_0_0_rgba(255,255,255,0.06)]",
+            align === "right" ? "right-0 menu-in-right origin-top-right" : "left-0 menu-in origin-top-left",
           )}
         >
           {options.map((option) => (
@@ -83,9 +85,9 @@ export function Dropdown<T extends string = string>({
                 setOpen(false);
               }}
               className={cn(
-                "flex w-full items-center justify-between gap-2 px-3 py-2 text-left text-xs text-text",
-                "hover:bg-surface-hover",
-                option.value === value && "font-medium text-primary-text",
+                "flex w-full items-center justify-between gap-2 px-3 py-2 text-left text-xs text-text transition-colors duration-100",
+                "hover:bg-surface-hover/80 active:bg-surface-hover",
+                option.value === value && "font-semibold text-primary-text",
               )}
             >
               {option.label}

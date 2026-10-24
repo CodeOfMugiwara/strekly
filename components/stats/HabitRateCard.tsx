@@ -41,7 +41,7 @@ export function HabitRateCard({ rates }: HabitRateCardProps) {
                   }}
                 />
               </div>
-              <span className="w-9 shrink-0 text-right text-xs font-semibold text-text">
+              <span className="w-10 shrink-0 text-right font-mono text-xs font-semibold tabular-nums text-text">
                 {rate.percent}%
               </span>
             </li>

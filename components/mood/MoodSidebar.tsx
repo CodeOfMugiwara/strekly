@@ -4,9 +4,9 @@ import { Card } from "@/components/ui/Card";
 import { Cell, Pie, PieChart, ResponsiveContainer } from "recharts";
 import { Lightbulb } from "lucide-react";
 import { MoodFace } from "@/components/ui/MoodFace";
+import { MoodSunriseScenicCard } from "@/components/ui/ScenicCards";
 import type { MoodInsightRow } from "@/lib/insights";
 import type { MoodDistribution, MoodLevel } from "@/lib/mood-view";
-import { ScriptQuote } from "@/components/ui/ScriptQuote";
 
 type MoodSidebarProps = {
   distribution: MoodDistribution;
@@ -114,18 +114,8 @@ export function MoodSidebar({
         </div>
       </Card>
 
-      {/* Decorative */}
-      <Card className="relative overflow-hidden bg-primary-lightest">
-        <ScriptQuote className="leading-relaxed">
-          {"Progress\nlooks different\nevery day\nand that's okay."}
-        </ScriptQuote>
-        <span
-          aria-hidden
-          className="pointer-events-none absolute -bottom-2 right-2 select-none text-4xl opacity-40"
-        >
-          🪻
-        </span>
-      </Card>
+      {/* Scenic Sunrise Card matching MoodPage.png */}
+      <MoodSunriseScenicCard />
     </aside>
   );
 }

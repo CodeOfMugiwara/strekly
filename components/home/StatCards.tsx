@@ -29,7 +29,7 @@ export function StatCards({
           <CountUp
             value={progressPercent}
             format={(v) => `${Math.round(v)}%`}
-            className="text-lg font-bold tracking-tight text-text"
+            className="text-lg font-bold tracking-tight text-text tabular-nums"
           />
         </ProgressRing>
         <div className="min-w-0">
@@ -41,14 +41,14 @@ export function StatCards({
       <Card
         className={cn(
           "flex items-start gap-4",
-          dayStreak > 0 && "border-warning/30 glow-warning",
+          dayStreak > 0 && "border-warning/30",
         )}
       >
         <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-warning-light/80 text-warning-strong shadow-xs">
           <HabitIcon emoji="🔥" name="streak" size={32} />
         </div>
         <div className="min-w-0">
-          <div className="text-2xl font-bold tracking-tight text-text">
+          <div className="text-2xl font-bold tracking-tight text-text tabular-nums">
             <CountUp value={dayStreak} />{" "}
             <span className="text-xs font-medium text-text-muted">days</span>
           </div>
@@ -64,13 +64,13 @@ export function StatCards({
           <HabitIcon emoji="👑" name="longest" size={32} />
         </div>
         <div className="min-w-0">
-          <div className="text-2xl font-bold tracking-tight text-text">
+          <div className="text-2xl font-bold tracking-tight text-text tabular-nums">
             <CountUp value={longestStreak} />{" "}
             <span className="text-xs font-medium text-text-muted">days</span>
           </div>
           <div className="text-sm font-medium text-text">Longest Streak</div>
           <div className="mt-0.5 text-xs text-text-muted">
-            {longestStreak > 0 ? "Personal record ✨" : "Build your best run"}
+            {longestStreak > 0 ? "Personal record" : "Build your best run"}
           </div>
         </div>
       </Card>

@@ -102,7 +102,7 @@ export function MonthCard({
               aria-pressed={isSelected}
               style={{ animationDelay: delay }}
               className={cn(
-                "cal-cell relative flex min-h-[76px] flex-col items-center gap-1 rounded-lg border-2 border-transparent px-1 py-1.5",
+                "cal-cell relative flex min-h-[76px] flex-col items-center gap-1 rounded-xl border-2 border-transparent px-1 py-1.5 transition-transform duration-140 active:scale-95",
                 "hover:bg-surface-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40",
                 !isSelected && isToday && "border-primary/60",
               )}
@@ -110,12 +110,12 @@ export function MonthCard({
               {isSelected ? (
                 <SlidingIndicator
                   layoutId="calendar-day-pill"
-                  className="rounded-lg border-2 border-primary bg-surface"
+                  className="rounded-xl border-2 border-primary bg-surface shadow-xs"
                 />
               ) : null}
               <span
                 className={cn(
-                  "relative z-10 text-sm",
+                  "relative z-10 font-mono text-sm tabular-nums",
                   isSelected || isToday
                     ? "font-semibold text-text"
                     : "text-text-secondary",

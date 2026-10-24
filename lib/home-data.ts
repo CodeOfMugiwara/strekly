@@ -12,6 +12,7 @@ import {
   vsPreviousMonthPercent,
 } from "@/lib/stats";
 import { addDays, startOfWeek } from "@/lib/utils";
+import { MOOD_SCALE, type MoodScaleLevel } from "@/lib/mood-scale";
 import type { Habit, HabitCompletion, HabitStatus, Profile } from "@/types";
 
 export type HomeHabitRow = {
@@ -53,6 +54,8 @@ export type HomeDashboard = {
   longestStreak: number;
   hasHabits: boolean;
   quickStats: HomeQuickStats;
+  moodLevels: MoodScaleLevel[];
+  todayMoodValue: number | null;
 };
 
 function startOfMonth(date: Date): Date {
@@ -85,25 +88,37 @@ export async function loadHomeDashboard(): Promise<HomeDashboard> {
   const prevStart = startOfMonth(prevMonth);
   const prevEnd = new Date(prevMonth.getFullYear(), prevMonth.getMonth() + 1, 0);
 
-  const [profileRes, habitsRes, completionsRes] = await Promise.all([
-    insforge.database
-      .from("profiles")
-      .select("display_name, week_starts_on")
-      .eq("id", user.id)
-      .limit(1),
-    insforge.database
-      .from("habits")
-      .select("id, name, emoji, description, sort_order, created_at")
-      .eq("user_id", user.id)
-      .eq("active", true)
-      .order("sort_order", { ascending: true }),
-    insforge.database
-      .from("habit_completions")
-      .select("id, user_id, habit_id, date, status")
-      .eq("user_id", user.id)
-      .gte("date", streakFrom)
-      .lte("date", selectedDate),
-  ]);
+  const [profileRes, habitsRes, completionsRes, moodLevelsRes, todayMoodRes] =
+    await Promise.all([
+      insforge.database
+        .from("profiles")
+        .select("display_name, week_starts_on")
+        .eq("id", user.id)
+        .limit(1),
+      insforge.database
+        .from("habits")
+        .select("id, name, emoji, description, sort_order, created_at")
+        .eq("user_id", user.id)
+        .eq("active", true)
+        .order("sort_order", { ascending: true }),
+      insforge.database
+        .from("habit_completions")
+        .select("id, user_id, habit_id, date, status")
+        .eq("user_id", user.id)
+        .gte("date", streakFrom)
+        .lte("date", selectedDate),
+      insforge.database
+        .from("mood_levels")
+        .select("value, label, emoji, color")
+        .eq("user_id", user.id)
+        .order("value", { ascending: false }),
+      insforge.database
+        .from("mood_entries")
+        .select("date, mood_value")
+        .eq("user_id", user.id)
+        .eq("date", selectedDate)
+        .limit(1),
+    ]);
 
   if (profileRes.error) {
     console.error("[loadHomeDashboard] profile", profileRes.error.message);
@@ -197,6 +212,15 @@ export async function loadHomeDashboard(): Promise<HomeDashboard> {
     habits,
   );
 
+  const moodLevels =
+    Array.isArray(moodLevelsRes.data) && moodLevelsRes.data.length > 0
+      ? (moodLevelsRes.data as MoodScaleLevel[])
+      : MOOD_SCALE;
+  const todayMoodRow = Array.isArray(todayMoodRes.data)
+    ? todayMoodRes.data[0]
+    : todayMoodRes.data;
+  const todayMoodValue = todayMoodRow ? Number(todayMoodRow.mood_value) : null;
+
   return {
     profile: profileRow ? { display_name: profileRow.display_name } : null,
     displayName: profileDisplayName(profileRow?.display_name, user.email),
@@ -218,5 +242,7 @@ export async function loadHomeDashboard(): Promise<HomeDashboard> {
         prevMonthStats.rate,
       ),
     },
+    moodLevels,
+    todayMoodValue,
   };
 }

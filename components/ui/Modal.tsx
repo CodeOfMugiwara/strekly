@@ -71,18 +71,19 @@ export function Modal({
             <Dialog.Content asChild forceMount>
               <motion.div
                 initial={
-                  reduced ? false : { opacity: 0, y: 12, scale: 0.97 }
+                  reduced ? false : { opacity: 0, y: 10, scale: 0.96 }
                 }
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 exit={
                   reduced
                     ? undefined
-                    : { opacity: 0, y: 8, scale: 0.98, transition: { duration: 0.15 } }
+                    : { opacity: 0, y: 6, scale: 0.97, transition: { duration: 0.14 } }
                 }
-                transition={{ type: "spring", stiffness: 340, damping: 28, mass: 0.8 }}
+                transition={{ type: "spring", stiffness: 380, damping: 30, mass: 0.8 }}
                 className={cn(
                   "fixed left-1/2 top-1/2 z-50 w-[calc(100vw-2rem)] -translate-x-1/2 -translate-y-1/2",
-                  "rounded-xl border border-border bg-surface p-6 shadow-pop focus:outline-none",
+                  "rounded-2xl border border-border/80 bg-surface p-6 shadow-pop focus:outline-none",
+                  "[box-shadow:var(--shadow-pop),_inset_0_1px_0_0_rgba(255,255,255,0.2)] dark:[box-shadow:var(--shadow-pop),_inset_0_1px_0_0_rgba(255,255,255,0.06)]",
                   SIZES[size],
                   className,
                 )}
@@ -104,7 +105,7 @@ export function Modal({
                   <button
                     type="button"
                     aria-label="Close dialog"
-                    className="absolute right-4 top-4 flex h-7 w-7 items-center justify-center rounded-lg text-text-muted transition-colors hover:bg-surface-hover hover:text-text focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40"
+                    className="absolute right-4 top-4 flex h-7 w-7 items-center justify-center rounded-lg text-text-muted transition-all duration-140 active:scale-[0.92] hover:bg-surface-hover hover:text-text focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40"
                   >
                     <X className="h-4 w-4" />
                   </button>

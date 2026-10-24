@@ -59,9 +59,9 @@ export function StreakHistoryCard({
     <Card>
       <div className="flex items-start justify-between gap-3">
         <h2 className="text-base font-semibold text-text">Streak History</h2>
-        <div className="rounded-lg border border-border bg-surface px-3 py-1 text-center shadow-card">
-          <p className="text-lg font-bold leading-none text-text">{chipValue}</p>
-          <p className="text-[10px] text-text-muted">days</p>
+        <div className="rounded-xl border border-border/80 bg-surface/90 px-3.5 py-1.5 text-center shadow-card [box-shadow:inset_0_1px_0_0_rgba(255,255,255,0.2)]">
+          <p className="font-mono text-lg font-bold leading-none tabular-nums text-text">{chipValue}</p>
+          <p className="mt-0.5 text-[10px] font-medium text-text-muted">days</p>
         </div>
       </div>
 

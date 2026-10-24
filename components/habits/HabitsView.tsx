@@ -4,6 +4,7 @@ import { useMemo, useRef, useState } from "react";
 import { Plus } from "lucide-react";
 import { setHabitCompletion } from "@/actions/completions";
 import { Button } from "@/components/ui/Button";
+import { cn } from "@/lib/utils";
 import { MonthNav } from "@/components/ui/MonthNav";
 import { MotionSwap, type SwapDirection } from "@/components/ui/MotionSwap";
 import { HabitGridCard } from "@/components/habits/HabitGridCard";
@@ -11,6 +12,7 @@ import { HabitGraphCard } from "@/components/habits/HabitGraphCard";
 import { NoteModal } from "@/components/habits/NoteModal";
 import { HabitFormModal } from "@/components/habits/HabitFormModal";
 import { LumiMascot } from "@/components/mascot/LumiMascot";
+import { ScriptQuote } from "@/components/ui/ScriptQuote";
 import { reorderHabits } from "@/actions/habits";
 import { saveDayNote, deleteDayNote } from "@/actions/notes";
 import { buildHabitMonthSeries } from "@/lib/stats";
@@ -56,6 +58,7 @@ export function HabitsView({
   const [noteDay, setNoteDay] = useState<number | null>(null);
   const [formHabit, setFormHabit] = useState<GridHabit | null>(null);
   const [formOpen, setFormOpen] = useState(false);
+  const [selectedCategoryId, setSelectedCategoryId] = useState<string | "all">("all");
   const [dragId, setDragId] = useState<string | null>(null);
   const [dragOverId, setDragOverId] = useState<string | null>(null);
 
@@ -101,6 +104,11 @@ export function HabitsView({
       }),
     [habits],
   );
+
+  const filteredHabits = useMemo(() => {
+    if (selectedCategoryId === "all") return sortedHabits;
+    return sortedHabits.filter((h) => h.categoryId === selectedCategoryId);
+  }, [sortedHabits, selectedCategoryId]);
 
   const monthSeries = useMemo(() => {
     const nowDate = new Date();
@@ -277,6 +285,14 @@ export function HabitsView({
           </p>
         </div>
         <div className="flex items-center gap-4">
+          <ScriptQuote
+            size="md"
+            slant
+            underline
+            className="hidden sm:inline-flex"
+          >
+            {"Good Habits\nBrighter Tomorrows"}
+          </ScriptQuote>
           <LumiMascot
             size="sm"
             mood="celebrate"
@@ -291,13 +307,74 @@ export function HabitsView({
         </div>
       </div>
 
+      {categories.length > 0 && (
+        <div className="flex flex-wrap items-center gap-2">
+          <button
+            type="button"
+            onClick={() => setSelectedCategoryId("all")}
+            className={cn(
+              "inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-medium transition-[background-color,border-color,box-shadow,transform] duration-140 active:scale-95",
+              selectedCategoryId === "all"
+                ? "bg-primary text-primary-foreground shadow-xs [box-shadow:inset_0_1px_0_0_rgba(255,255,255,0.25)]"
+                : "border border-border/80 bg-surface/80 text-text-muted hover:border-border-strong hover:bg-surface hover:text-text",
+            )}
+          >
+            <span>All Habits</span>
+            <span
+              className={cn(
+                "rounded-full px-1.5 py-0.5 text-[10px] font-mono tabular-nums",
+                selectedCategoryId === "all"
+                  ? "bg-white/25 text-primary-foreground"
+                  : "bg-surface-alt text-text-muted",
+              )}
+            >
+              {sortedHabits.length}
+            </span>
+          </button>
+          {categories.map((cat) => {
+            const count = sortedHabits.filter((h) => h.categoryId === cat.id).length;
+            const isSelected = selectedCategoryId === cat.id;
+            return (
+              <button
+                key={cat.id}
+                type="button"
+                onClick={() => setSelectedCategoryId(cat.id)}
+                className={cn(
+                  "inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-medium transition-[background-color,border-color,box-shadow,transform] duration-140 active:scale-95",
+                  isSelected
+                    ? "bg-primary text-primary-foreground shadow-xs [box-shadow:inset_0_1px_0_0_rgba(255,255,255,0.25)]"
+                    : "border border-border/80 bg-surface/80 text-text-muted hover:border-border-strong hover:bg-surface hover:text-text",
+                )}
+              >
+                <span
+                  className="h-2 w-2 rounded-full"
+                  style={{ backgroundColor: cat.color || "var(--color-primary)" }}
+                  aria-hidden
+                />
+                <span>{cat.name}</span>
+                <span
+                  className={cn(
+                    "rounded-full px-1.5 py-0.5 text-[10px] font-mono tabular-nums",
+                    isSelected
+                      ? "bg-white/25 text-primary-foreground"
+                      : "bg-surface-alt text-text-muted",
+                  )}
+                >
+                  {count}
+                </span>
+              </button>
+            );
+          })}
+        </div>
+      )}
+
       <MotionSwap
         swapKey={`${year}-${month}`}
         direction={direction}
         className="space-y-5"
       >
       <HabitGridCard
-        habits={sortedHabits}
+        habits={filteredHabits}
         daysInMonth={totalDays}
         todayDay={todayDay}
         statuses={statuses}

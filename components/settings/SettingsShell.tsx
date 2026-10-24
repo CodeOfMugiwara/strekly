@@ -19,6 +19,7 @@ import { ManageHabitsCard } from "@/components/settings/ManageHabitsCard";
 import { SettingsHeaderActions } from "@/components/settings/SettingsHeaderActions";
 import { SlidingIndicator } from "@/components/ui/SlidingIndicator";
 import { MotionSwap } from "@/components/ui/MotionSwap";
+import { ScriptQuote } from "@/components/ui/ScriptQuote";
 import { cn } from "@/lib/utils";
 import type {
   SettingsCategory,
@@ -26,7 +27,6 @@ import type {
   SettingsMoodLevel,
   SettingsProfile,
 } from "@/lib/settings-data";
-import { ScriptQuote } from "@/components/ui/ScriptQuote";
 
 type SettingsShellProps = {
   categories: SettingsCategory[];
@@ -85,10 +85,14 @@ export function SettingsShell({
             Customize your experience. Make it yours.
           </p>
         </div>
-        <div className="flex items-start gap-4">
-          <ScriptQuote size="lg" className="hidden items-center gap-2 sm:flex">
+        <div className="flex items-center gap-3">
+          <ScriptQuote
+            size="md"
+            slant
+            underline
+            className="hidden sm:inline-flex"
+          >
             {"Small changes\nmake a big difference"}
-            <Heart className="h-4 w-4 shrink-0 fill-primary text-primary-text" />
           </ScriptQuote>
           <SettingsHeaderActions profile={profile} moodLevels={moodLevels} />
         </div>

@@ -10,7 +10,7 @@ import { cn } from "@/lib/utils";
  * and shadow are identical everywhere.
  */
 const CARD_SURFACE =
-  "rounded-2xl border border-border/80 bg-surface/90 backdrop-blur-md p-5 shadow-card";
+  "rounded-2xl border border-border/80 bg-surface/95 backdrop-blur-md p-5 shadow-card [box-shadow:var(--shadow-card),_inset_0_1px_0_0_rgba(255,255,255,0.2)] dark:[box-shadow:var(--shadow-card),_inset_0_1px_0_0_rgba(255,255,255,0.06)]";
 
 type CardProps = React.HTMLAttributes<HTMLDivElement> & {
   as?: "div" | "section" | "article";
@@ -34,9 +34,9 @@ export function Card({
     <Tag
       className={cn(
         CARD_SURFACE,
-        "transition-[box-shadow,border-color,transform] duration-200",
+        "transition-all duration-140 ease-[cubic-bezier(0.23,1,0.32,1)]",
         interactive &&
-          "hover:-translate-y-0.5 hover:shadow-soft hover:border-primary/35",
+          "hover:-translate-y-0.5 hover:shadow-soft hover:border-primary/40 active:scale-[0.99]",
         className,
       )}
       {...props}
