@@ -89,12 +89,23 @@ function yBound(pts: RevealPoint[], baseLine: unknown) {
   return max + REDUCED_BRIDGE;
 }
 
+function extractPointValue(p: RevealPoint | undefined): unknown {
+  if (!p) return undefined;
+  if (Array.isArray(p.value)) {
+    return p.value[1];
+  }
+  if (p.payload && typeof p.payload === "object" && "value" in p.payload) {
+    return (p.payload as { value?: unknown }).value;
+  }
+  return p.value;
+}
+
 function firstChangedIndex(prev: RevealPoint[], next: RevealPoint[]) {
   const n = Math.max(prev.length, next.length);
   for (let i = 0; i < n; i++) {
     const a = prev[i];
     const b = next[i];
-    if (!a || !b || a.value !== b.value) return i;
+    if (!a || !b || extractPointValue(a) !== extractPointValue(b)) return i;
   }
   return null;
 }
